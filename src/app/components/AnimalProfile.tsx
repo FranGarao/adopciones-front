@@ -3,6 +3,7 @@ import { Animal, AnimalSex, AnimalSize, AnimalType } from "../types/animal";
 import React, { useState } from "react";
 import { useAnimalsStore } from "../store/useAnimalsStore";
 import Link from "next/link";
+import { VERDE_PRINCIPAL, VERDE_ACENTO, VERDE_GRISACEO, VERDE_MUY_CLARO, BLANCO_HUESO, CASI_NEGRO } from '../../Constants/colors';
 
 type Props = {
     animal: Animal;
@@ -42,18 +43,17 @@ export function AnimalProfile({
     const setAnimal = useAnimalsStore((s) => s.setAnimal);
 
     const btnPrimary =
-        "inline-flex items-center justify-center px-5 py-2 rounded-xl bg-rose-600 text-white font-semibold shadow-sm " +
-        "hover:bg-rose-700 active:bg-rose-800 focus:outline-none focus:ring-2 focus:ring-rose-300 transition";
+        "inline-flex items-center justify-center px-5 py-2 rounded-xl text-white font-semibold shadow-sm " +
+        "focus:outline-none focus:ring-2 transition";
     const chip =
-        "px-2 py-1 text-xs rounded-full border border-zinc-200 bg-zinc-50 text-zinc-700 " +
-        "dark:border-zinc-700 dark:bg-zinc-800/60 dark:text-zinc-200";
+        "px-2 py-1 text-xs rounded-full border";
 
     return (
         <>
-            <div className="w-full max-w-5xl mx-auto rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 shadow-xl overflow-hidden">
+            <div className="w-full max-w-5xl mx-auto rounded-3xl border border-zinc-200 shadow-xl overflow-hidden" style={{ backgroundColor: BLANCO_HUESO }}>
                 <div className="grid md:grid-cols-2">
                     {/* Lado izquierdo: imagen + galería */}
-                    <div className="bg-gradient-to-b from-zinc-50 to-white dark:from-zinc-900 dark:to-zinc-950">
+                    <div style={{ background: `linear-gradient(to bottom, ${VERDE_GRISACEO}40, ${BLANCO_HUESO})` }}>
                         <div className="relative">
                             <ImgWithFallback
                                 src={animal.imageUrl}
@@ -82,7 +82,7 @@ export function AnimalProfile({
                                         key={i}
                                         src={g}
                                         alt={`${animal.name} ${i + 1}`}
-                                        className="h-16 w-24 object-cover rounded-lg ring-1 ring-zinc-200/70 dark:ring-zinc-800/70 hover:ring-rose-400/60 transition"
+                                        className="h-16 w-24 object-cover rounded-lg border transition"
                                     />
                                 ))}
                             </div>
@@ -93,13 +93,13 @@ export function AnimalProfile({
                     <div className="p-6 md:p-8">
                         <div className="flex items-start justify-between gap-4">
                             <div>
-                                <h1 className="text-2xl md:text-3xl font-semibold tracking-tight">{animal.name}</h1>
-                                <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+                                <h1 className="text-2xl md:text-3xl font-semibold tracking-tight" style={{ color: CASI_NEGRO }}>{animal.name}</h1>
+                                <p className="text-sm mt-1" style={{ color: CASI_NEGRO + '99' }}>
                                     Edad: {pretty.age(animal.age_months)}
                                     {animal.breed ? ` · ${animal.breed}` : ""}
                                 </p>
                                 {animal.location && (
-                                    <p className="text-sm text-zinc-600 dark:text-zinc-400">Ubicación: {animal.location}</p>
+                                    <p className="text-sm" style={{ color: CASI_NEGRO + '99' }}>Ubicación: {animal.location}</p>
                                 )}
                             </div>
                         </div>
@@ -107,7 +107,7 @@ export function AnimalProfile({
                         {animal.tags && animal.tags.length > 0 && (
                             <div className="mt-4 flex flex-wrap gap-2">
                                 {animal.tags.map((t: string, i: number) => (
-                                    <span key={i} className={`${chip} hover:border-rose-300/70 hover:bg-rose-50/60 transition`}>
+                                    <span key={i} className={`${chip} transition`} style={{ borderColor: VERDE_GRISACEO, backgroundColor: VERDE_MUY_CLARO, color: CASI_NEGRO }} onMouseEnter={(e: React.MouseEvent<HTMLSpanElement>) => { e.currentTarget.style.borderColor = VERDE_ACENTO; e.currentTarget.style.backgroundColor = VERDE_ACENTO + '40'; }} onMouseLeave={(e: React.MouseEvent<HTMLSpanElement>) => { e.currentTarget.style.borderColor = VERDE_GRISACEO; e.currentTarget.style.backgroundColor = VERDE_MUY_CLARO; }}>
                                         #{t}
                                     </span>
                                 ))}
@@ -115,7 +115,7 @@ export function AnimalProfile({
                         )}
 
                         {animal.description && (
-                            <p className="mt-5 text-[15px] leading-7 text-zinc-800 dark:text-zinc-200">
+                            <p className="mt-5 text-[15px] leading-7" style={{ color: CASI_NEGRO }}>
                                 {animal.description}
                             </p>
                         )}
@@ -132,6 +132,9 @@ export function AnimalProfile({
                                 onClick={() => setAnimal(animal)}
                                 prefetch={false}
                                 className={`${btnPrimary} mt-8 w-full md:w-auto`}
+                                style={{ backgroundColor: VERDE_PRINCIPAL }}
+                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = VERDE_ACENTO}
+                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = VERDE_PRINCIPAL}
                             >
                                 Quiero adoptar
                             </Link>
@@ -144,8 +147,10 @@ export function AnimalProfile({
                 <Link
                     href="/"
                     prefetch={false}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700
-                     bg-white/70 dark:bg-zinc-900/70 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border transition-colors"
+                    style={{ borderColor: VERDE_GRISACEO, backgroundColor: BLANCO_HUESO + 'B3', color: CASI_NEGRO }}
+                    onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => e.currentTarget.style.backgroundColor = VERDE_MUY_CLARO}
+                    onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => e.currentTarget.style.backgroundColor = BLANCO_HUESO + 'B3'}
                 >
                     ← Volver al menú
                 </Link>
@@ -157,11 +162,14 @@ export function AnimalProfile({
 function Badge({ label, ok }: { label: string; ok: boolean }) {
     return (
         <div
-            className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-zinc-800 dark:text-zinc-200
-        ${ok ? "bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800"
-                    : "bg-zinc-50 border-zinc-200 dark:bg-zinc-900 dark:border-zinc-800"}`}
+            className="flex items-center gap-2 px-3 py-2 rounded-xl border"
+            style={{
+                backgroundColor: ok ? '#dcfce7' : VERDE_MUY_CLARO,
+                borderColor: ok ? '#bbf7d0' : VERDE_GRISACEO,
+                color: CASI_NEGRO
+            }}
         >
-            <span className={`h-2.5 w-2.5 rounded-full ${ok ? "bg-green-500" : "bg-zinc-400"}`} />
+            <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: ok ? '#22c55e' : VERDE_GRISACEO }} />
             <span className="text-sm">{label}</span>
         </div>
     );

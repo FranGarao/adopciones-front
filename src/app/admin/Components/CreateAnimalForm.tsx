@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useCreateAnimalMultipart } from '../../../hooks/useCreateAnimalMultipart';
 import type { AnimalSex, AnimalSize, AnimalType } from '@/app/types/animal';
 import { useMemo } from 'react';
+import { VERDE_PRINCIPAL, VERDE_ACENTO, VERDE_MUY_CLARO, BLANCO_HUESO, CASI_NEGRO, VERDE_GRISACEO } from '../../../Constants/colors';
 
 const schema = z.object({
     name: z.string().min(2, 'Ingresá un nombre'),
@@ -67,15 +68,14 @@ export default function CreateAnimalForm() {
     );
 
     const input =
-        'w-full rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 ' +
-        'px-3 py-2 text-sm shadow-sm outline-none focus:ring-2 focus:ring-rose-300 dark:focus:ring-rose-400/40 ' +
-        'focus:border-rose-400 placeholder:text-zinc-400';
-    const label = 'block text-sm font-medium text-zinc-800 dark:text-zinc-200 mb-1';
+        'w-full rounded-xl border px-3 py-2 text-sm shadow-sm outline-none focus:ring-2 ' +
+        'placeholder:text-zinc-400';
+    const label = 'block text-sm font-medium mb-1';
     const card =
-        'mx-auto max-w-3xl rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 shadow-lg overflow-hidden';
+        'mx-auto max-w-3xl rounded-3xl border border-zinc-200 shadow-lg overflow-hidden';
     const btnPrimary =
-        'inline-flex items-center justify-center px-5 py-2 rounded-xl bg-rose-600 text-white font-semibold ' +
-        'shadow-sm hover:bg-rose-700 active:bg-rose-800 disabled:opacity-60';
+        'inline-flex items-center justify-center px-5 py-2 rounded-xl text-white font-semibold ' +
+        'shadow-sm disabled:opacity-60';
     const btnOutline =
         'px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800';
 
@@ -111,11 +111,11 @@ export default function CreateAnimalForm() {
     }
 
     return (
-        <div className={card}>
+        <div className={card} style={{ backgroundColor: BLANCO_HUESO }}>
             {/* Header */}
-            <div className="bg-gradient-to-r from-rose-50 to-rose-100 dark:from-rose-900/20 dark:to-rose-800/10 p-6">
-                <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Crear nuevo animal</h1>
-                <p className="mt-1 text-sm text-zinc-700 dark:text-zinc-300">
+            <div className="p-6" style={{ background: `linear-gradient(to right, ${VERDE_MUY_CLARO}, ${BLANCO_HUESO})` }}>
+                <h1 className="text-2xl md:text-3xl font-bold tracking-tight" style={{ color: CASI_NEGRO }}>Crear nuevo animal</h1>
+                <p className="mt-1 text-sm" style={{ color: CASI_NEGRO + '99' }}>
                     Completá la información y publicá el perfil para adopción.
                 </p>
             </div>
@@ -126,7 +126,7 @@ export default function CreateAnimalForm() {
                 <div className="grid md:grid-cols-2 gap-4">
                     <div>
                         <label className={label}>Nombre</label>
-                        <input className={input} placeholder="Ej: Luna" {...register('name')} />
+                        <input className={input} placeholder="Ej: Luna" {...register('name')} style={{ backgroundColor: BLANCO_HUESO, color: CASI_NEGRO, borderColor: VERDE_GRISACEO }} />
                         {errors.name && <p className="mt-1 text-xs text-rose-600">{errors.name.message}</p>}
                     </div>
 
@@ -240,7 +240,7 @@ export default function CreateAnimalForm() {
                     <button type="button" className={btnOutline} onClick={() => reset()}>
                         Limpiar
                     </button>
-                    <button type="submit" disabled={loading} className={btnPrimary}>
+                    <button type="submit" disabled={loading} className={btnPrimary} style={{ backgroundColor: VERDE_PRINCIPAL }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = VERDE_ACENTO} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = VERDE_PRINCIPAL}>
                         {loading ? 'Creando…' : 'Crear'}
                     </button>
                 </div>

@@ -1,12 +1,13 @@
 'use client';
 import { Animal } from '../types/animal';
 import AnimalCard from './AnimalCard';
+import { CASI_NEGRO } from '../../Constants/colors';
 
 
 export default function AnimalGrid({ animals }: { animals: Animal[] }) {
     if (!animals.length) {
         return (
-            <div className="text-center py-16 text-zinc-600 dark:text-zinc-300">No se encontraron animales con esos filtros 🐾</div>
+            <div className="text-center py-16" style={{ color: CASI_NEGRO + '99' }}>No se encontraron animales con esos filtros 🐾</div>
         );
     }
     return (

@@ -4,6 +4,7 @@ import { monthsToFriendly } from '../../lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useAnimalsStore } from '../store/useAnimalsStore';
+import { VERDE_PRINCIPAL, VERDE_ACENTO, BLANCO_HUESO, CASI_NEGRO } from '../../Constants/colors';
 
 export default function AnimalCard({ animal }: { animal: Animal }) {
     const setAnimal = useAnimalsStore((s) => s.setAnimal);
@@ -11,7 +12,7 @@ export default function AnimalCard({ animal }: { animal: Animal }) {
     const imageUrl = animal.imageUrl || '/animals/placeholder.jpg';
     const age = animal.age_months ? monthsToFriendly(animal.age_months) : 'Unknown';
     return (
-        <article className="group rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition bg-white dark:bg-zinc-900">
+        <article className="group rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition" style={{ backgroundColor: BLANCO_HUESO }}>
             <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow">
                 <Image src={imageUrl} alt={animal.name} fill
                     className="object-cover group-hover:scale-105 transition"
@@ -36,12 +37,12 @@ export default function AnimalCard({ animal }: { animal: Animal }) {
 
 
             <div className="p-3">
-                <h3 className="font-bold text-lg leading-tight">{animal.name}</h3>
-                <p className="text-sm text-zinc-600 dark:text-zinc-300">
+                <h3 className="font-bold text-lg leading-tight" style={{ color: CASI_NEGRO }}>{animal.name}</h3>
+                <p className="text-sm" style={{ color: CASI_NEGRO + '99' }}>
                     {age}{animal.breed ? ` · ${animal.breed}` : ''}
                 </p>
                 {animal.location && (
-                    <p className="mt-1 text-xs text-zinc-500">{animal.location}</p>
+                    <p className="mt-1 text-xs" style={{ color: CASI_NEGRO + '80' }}>{animal.location}</p>
                 )}
 
 
@@ -57,7 +58,10 @@ export default function AnimalCard({ animal }: { animal: Animal }) {
                     <Link
                         href={`/adopt/${animal.id}`}
                         onClick={() => setAnimal(animal)}
-                        className="px-3 py-2 text-sm rounded-xl bg-rose-600 text-white font-semibold hover:bg-rose-700"
+                        className="px-3 py-2 text-sm rounded-xl text-white font-semibold transition-colors"
+                        style={{ backgroundColor: VERDE_PRINCIPAL }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = VERDE_ACENTO}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = VERDE_PRINCIPAL}
                         prefetch={false}
                     >
                         Adoptar

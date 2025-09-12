@@ -5,6 +5,7 @@ import AnimalGrid from './components/AnimalGrid';
 import { useAnimals } from '../hooks/useAnimals';
 import { useState } from 'react';
 import AboutPage from './components/About';
+import { CASI_NEGRO } from '../Constants/colors';
 
 
 export default function Home() {
@@ -19,8 +20,8 @@ export default function Home() {
 
       <section id="listado" className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold">Animales en adopción</h2>
-          <span className="text-sm text-zinc-600 dark:text-zinc-400">{total} resultados</span>
+          <h2 className="text-2xl font-bold" style={{ color: CASI_NEGRO }}>Animales en adopción</h2>
+          <span className="text-sm" style={{ color: CASI_NEGRO + '99' }}>{total} resultados</span>
         </div>
 
 
@@ -31,9 +32,9 @@ export default function Home() {
 
 
         {isLoading ? (
-          <div className="py-16 text-center">Cargando...</div>
+          <div className="py-16 text-center" style={{ color: CASI_NEGRO }}>Cargando...</div>
         ) : isError ? (
-          <div className="py-16 text-center text-red-600">Ocurrió un error cargando los animales.</div>
+          <div className="py-16 text-center text-red-600" style={{ color: CASI_NEGRO }}>Ocurrió un error cargando los animales.</div>
         ) : (
           <>
             <AnimalGrid animals={animals} />

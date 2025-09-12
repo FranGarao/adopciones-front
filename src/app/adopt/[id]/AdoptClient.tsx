@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import type { Animal } from '@/app/types/animal';
 import { AdoptionForm, type AdoptionFormData } from '@/app/components/AdoptionForm';
 import { useAnimalsStore } from '@/app/store/useAnimalsStore';
+import { CASI_NEGRO } from '@/Constants/colors';
 
 export default function AdoptClient({ id }: { id: string }) {
     const getAnimal = useAnimalsStore((s) => s.getAnimal);
@@ -54,9 +55,9 @@ export default function AdoptClient({ id }: { id: string }) {
         }
     };
 
-    if (loading) return <div className="p-6">Cargando…</div>;
-    if (error) return <div className="p-6 text-red-600">{error}</div>;
-    if (!animal) return <div className="p-6">No se encontró el animal.</div>;
+    if (loading) return <div className="p-6" style={{ color: CASI_NEGRO }}>Cargando…</div>;
+    if (error) return <div className="p-6 text-red-600" style={{ color: CASI_NEGRO }}>{error}</div>;
+    if (!animal) return <div className="p-6" style={{ color: CASI_NEGRO }}>No se encontró el animal.</div>;
 
     return (
         <div className="px-4 py-6">

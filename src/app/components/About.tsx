@@ -1,5 +1,6 @@
 // app/about/page.tsx
 import Link from "next/link";
+import { VERDE_PRINCIPAL, VERDE_ACENTO, VERDE_MUY_CLARO, BLANCO_HUESO, CASI_NEGRO, NEUTRO } from '../../Constants/colors';
 
 export default function AboutPage() {
     // arriba del return (o al inicio del componente)
@@ -8,9 +9,9 @@ export default function AboutPage() {
     return (
         <div className="mx-auto max-w-6xl px-4 py-8 space-y-10">
             {/* Hero */}
-            <section className="rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-gradient-to-r from-rose-50 to-rose-100 dark:from-rose-900/20 dark:to-rose-800/10 p-8">
+            <section className="rounded-3xl border border-zinc-200 dark:border-zinc-800 p-8" style={{ background: `linear-gradient(to right, ${VERDE_MUY_CLARO}, ${BLANCO_HUESO})` }}>
                 <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
-                    Sobre <span className="text-rose-700 dark:text-rose-400">Adopciones Quilmes</span>
+                    Sobre <span style={{ color: VERDE_PRINCIPAL }}>Adopciones Quilmes</span>
                 </h1>
                 <p className="mt-3 text-zinc-700 dark:text-zinc-300 max-w-2xl">
                     Somos un grupo de voluntarios de Quilmes dedicado al rescate, recuperación y
@@ -22,7 +23,10 @@ export default function AboutPage() {
                     <Link
                         href="/animals"
                         prefetch={false}
-                        className="px-5 py-2 rounded-xl bg-rose-600 text-white font-semibold shadow hover:bg-rose-700"
+                        className="px-5 py-2 rounded-xl text-white font-semibold shadow transition-colors"
+                        style={{ backgroundColor: VERDE_PRINCIPAL }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = VERDE_ACENTO}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = VERDE_PRINCIPAL}
                     >
                         Ver animales en adopción
                     </Link>
@@ -54,7 +58,8 @@ export default function AboutPage() {
                             Ver en Google Maps →
                         </a> */}
                         <a
-                            className="inline-block text-sm text-rose-700 dark:text-rose-400 hover:underline"
+                            className="inline-block text-sm hover:underline"
+                            style={{ color: VERDE_PRINCIPAL }}
                             href={`https://www.google.com/maps/dir/?api=1&destination=${q}`}
                             target="_blank"
                             rel="noopener noreferrer"
@@ -137,7 +142,10 @@ export default function AboutPage() {
                         </a>
                         <a
                             href="mailto:adopciones@adopcionesquilmes.org?subject=Donaciones"
-                            className="px-4 py-2 rounded-xl bg-rose-600 text-white font-semibold hover:bg-rose-700 text-sm"
+                            className="px-4 py-2 rounded-xl text-white font-semibold text-sm transition-colors"
+                            style={{ backgroundColor: VERDE_PRINCIPAL }}
+                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = VERDE_ACENTO}
+                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = VERDE_PRINCIPAL}
                         >
                             Donar por email
                         </a>

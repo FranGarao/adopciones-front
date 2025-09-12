@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { AnimalSex, AnimalSize, AnimalType } from '../types/animal';
+import { BLANCO_HUESO, CASI_NEGRO } from '../../Constants/colors';
 
 export interface Filters {
     q: string;
@@ -28,7 +29,8 @@ export default function FilterBar({ onChange }: { onChange: (f: Filters) => void
                 <input
                     type="text"
                     placeholder="Nombre, raza, ciudad..."
-                    className="w-full rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2"
+                    className="w-full rounded-xl border border-zinc-300 px-3 py-2"
+                    style={{ backgroundColor: BLANCO_HUESO, color: CASI_NEGRO }}
                     value={filters.q}
                     onChange={(e) => update({ q: e.target.value })}
                 />
@@ -38,7 +40,8 @@ export default function FilterBar({ onChange }: { onChange: (f: Filters) => void
             <div>
                 <label className="block text-sm font-medium mb-1">Tipo</label>
                 <select
-                    className="rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2"
+                    className="rounded-xl border border-zinc-300 px-3 py-2"
+                    style={{ backgroundColor: BLANCO_HUESO, color: CASI_NEGRO }}
                     value={filters.type}
                     onChange={(e) => update({ type: e.target.value as Filters['type'] })}
                 >
@@ -53,7 +56,8 @@ export default function FilterBar({ onChange }: { onChange: (f: Filters) => void
             <div>
                 <label className="block text-sm font-medium mb-1">Tamaño</label>
                 <select
-                    className="rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2"
+                    className="rounded-xl border border-zinc-300 px-3 py-2"
+                    style={{ backgroundColor: BLANCO_HUESO, color: CASI_NEGRO }}
                     value={filters.size}
                     onChange={(e) => update({ size: e.target.value as Filters['size'] })}
                 >
@@ -69,7 +73,8 @@ export default function FilterBar({ onChange }: { onChange: (f: Filters) => void
             <div>
                 <label className="block text-sm font-medium mb-1">Sexo</label>
                 <select
-                    className="rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2"
+                    className="rounded-xl border border-zinc-300 px-3 py-2"
+                    style={{ backgroundColor: BLANCO_HUESO, color: CASI_NEGRO }}
                     value={filters.sex}
                     onChange={(e) => update({ sex: e.target.value as Filters['sex'] })}
                 >

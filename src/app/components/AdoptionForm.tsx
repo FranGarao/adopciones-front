@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import type { Animal } from "../types/animal";
+import { VERDE_PRINCIPAL, VERDE_ACENTO, VERDE_MUY_CLARO, BLANCO_HUESO, CASI_NEGRO, VERDE_GRISACEO } from '../../Constants/colors';
 
 const schema = z.object({
     animalId: z.union([z.string(), z.number()]),
@@ -15,9 +16,9 @@ const schema = z.object({
     city: z.string().min(1, "Campo requerido"),
     province: z.string().min(1, "Campo requerido"),
     housingType: z.enum(["HOUSE", "APARTMENT", "COUNTRY", "OTHER"]),
-    hasOtherPets: z.boolean().default(false),
+    hasOtherPets: z.boolean(),
     message: z.string().optional(),
-    acceptTerms: z.literal(true, { errorMap: () => ({ message: "Debes aceptar los términos" }) }),
+    acceptTerms: z.literal(true, { message: "Debes aceptar los términos" }),
 });
 
 export type AdoptionFormData = z.infer<typeof schema>;
@@ -50,42 +51,41 @@ export function AdoptionForm({
             housingType: "HOUSE",
             hasOtherPets: false,
             message: "",
-            acceptTerms: false,
+            acceptTerms: true,
         },
         mode: "onSubmit",
     });
 
     const inputClass =
-        "w-full rounded-xl border border-zinc-300 dark:border-zinc-700 " +
-        "bg-white dark:bg-zinc-900 px-3 py-2 text-sm shadow-sm " +
-        "outline-none focus:ring-2 focus:ring-rose-300 dark:focus:ring-rose-400/40 " +
-        "focus:border-rose-400 placeholder:text-zinc-400 disabled:opacity-60";
+        "w-full rounded-xl border border-zinc-300 " +
+        "px-3 py-2 text-sm shadow-sm " +
+        "outline-none focus:ring-2 " +
+        "placeholder:text-zinc-400 disabled:opacity-60";
     const btnGhost =
         "inline-flex items-center gap-2 px-3 py-2 rounded-xl border " +
-        "border-zinc-300 dark:border-zinc-700 bg-white/60 dark:bg-zinc-900/60 " +
-        "hover:bg-zinc-50 dark:hover:bg-zinc-800 transition";
+        "transition";
     const btnPrimary =
-        "px-5 py-2 rounded-xl bg-rose-600 text-white font-semibold " +
-        "shadow-sm hover:bg-rose-700 active:bg-rose-800 disabled:opacity-60";
+        "px-5 py-2 rounded-xl text-white font-semibold " +
+        "shadow-sm disabled:opacity-60";
     const btnOutline =
-        "px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 " +
-        "hover:bg-zinc-50 dark:hover:bg-zinc-800";
+        "px-4 py-2 rounded-xl border transition-colors";
 
     return (
         <form
             onSubmit={handleSubmit(onSubmit)}
-            className="w-full max-w-2xl mx-auto rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 shadow-lg"
+            className="w-full max-w-2xl mx-auto rounded-2xl border border-zinc-200 shadow-lg"
+            style={{ backgroundColor: BLANCO_HUESO }}
         >
             {/* Barra superior con botón Volver */}
             <div className="flex items-center justify-between px-6 pt-4">
-                <button type="button" onClick={() => router.back()} className={btnGhost} aria-label="Volver">
+                <button type="button" onClick={() => router.back()} className={btnGhost} aria-label="Volver" style={{ borderColor: VERDE_GRISACEO, backgroundColor: BLANCO_HUESO + '99' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = VERDE_MUY_CLARO} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = BLANCO_HUESO + '99'}>
                     <span>←</span>
                     <span className="hidden sm:inline">Volver</span>
                 </button>
             </div>
 
             {/* Header del formulario */}
-            <header className="m-6 mt-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-gradient-to-r from-rose-50 to-rose-100 dark:from-rose-900/20 dark:to-rose-800/10 p-4 flex items-center gap-4">
+            <header className="m-6 mt-3 rounded-xl border border-zinc-200 p-4 flex items-center gap-4" style={{ background: `linear-gradient(to right, ${VERDE_MUY_CLARO}, ${BLANCO_HUESO})` }}>
                 <Image
                     src={animal.imageUrl || "/animals/placeholder.jpg"}
                     alt={animal.name}
@@ -94,8 +94,8 @@ export function AdoptionForm({
                     height={80}
                 />
                 <div>
-                    <h2 className="text-xl font-semibold leading-tight">Formulario de adopción</h2>
-                    <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                    <h2 className="text-xl font-semibold leading-tight" style={{ color: CASI_NEGRO }}>Formulario de adopción</h2>
+                    <p className="text-sm" style={{ color: CASI_NEGRO + '99' }}>
                         Postulación para: <span className="font-medium">{animal.name}</span>
                     </p>
                 </div>
@@ -105,7 +105,7 @@ export function AdoptionForm({
             <div className="px-6 pb-6 space-y-5">
                 <div className="grid md:grid-cols-2 gap-4">
                     <Field label="Nombre y apellido" error={errors.fullName?.message}>
-                        <input className={inputClass} {...register("fullName")} placeholder="Ej: María Pérez" />
+                        <input className={inputClass} {...register("fullName")} placeholder="Ej: María Pérez" style={{ backgroundColor: BLANCO_HUESO, color: CASI_NEGRO, borderColor: VERDE_GRISACEO }} />
                     </Field>
 
                     <Field label="Email" error={errors.email?.message}>
@@ -160,10 +160,10 @@ export function AdoptionForm({
 
                 {/* Acciones */}
                 <div className="flex gap-3 justify-end pt-2">
-                    <button type="button" className={btnOutline} onClick={() => reset()}>
+                    <button type="button" className={btnOutline} onClick={() => reset()} style={{ borderColor: VERDE_GRISACEO, color: CASI_NEGRO }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = VERDE_MUY_CLARO} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
                         Limpiar
                     </button>
-                    <button type="submit" disabled={isSubmitting} className={btnPrimary}>
+                    <button type="submit" disabled={isSubmitting} className={btnPrimary} style={{ backgroundColor: VERDE_PRINCIPAL }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = VERDE_ACENTO} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = VERDE_PRINCIPAL}>
                         {isSubmitting ? "Enviando…" : "Enviar solicitud"}
                     </button>
                 </div>
@@ -175,9 +175,9 @@ export function AdoptionForm({
 function Field({ label, error, children }: { label?: string; error?: string; children: React.ReactNode }) {
     return (
         <div>
-            {label && <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-200 mb-1">{label}</label>}
+            {label && <label className="block text-sm font-medium mb-1" style={{ color: CASI_NEGRO }}>{label}</label>}
             {children}
-            {error && <p className="text-xs text-rose-600 dark:text-rose-400 mt-1">{error}</p>}
+            {error && <p className="text-xs mt-1" style={{ color: '#dc2626' }}>{error}</p>}
         </div>
     );
 }
