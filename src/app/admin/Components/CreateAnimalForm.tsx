@@ -8,6 +8,7 @@ import { useCreateAnimalMultipart } from '../../../hooks/useCreateAnimalMultipar
 import type { AnimalSex, AnimalSize, AnimalType } from '@/app/types/animal';
 import { useMemo } from 'react';
 import { VERDE_PRINCIPAL, VERDE_ACENTO, VERDE_MUY_CLARO, BLANCO_HUESO, CASI_NEGRO, VERDE_GRISACEO } from '../../../Constants/colors';
+import Swal from 'sweetalert2';
 
 const schema = z.object({
     name: z.string().min(2, 'Ingresá un nombre'),
@@ -105,9 +106,21 @@ export default function CreateAnimalForm() {
         fd.append('dewormed', String(values.dewormed));
         fd.append('castrated', String(values.castrated));
 
-        const created = await createAnimalMultipart(fd);
+
+        console.log('fd', fd);
+
+        await createAnimalMultipart(fd);
+
         reset();
-        router.push(`/animals/${created.id}`);
+
+        Swal.fire({
+            title: 'Animal creado',
+            text: 'El animal ha sido creado correctamente',
+            icon: 'success',
+        });
+
+        router.refresh();
+        // router.push(`/animals/${created.id}`);
     }
 
     return (
@@ -219,7 +232,6 @@ export default function CreateAnimalForm() {
                     </div>
                 </div>
 
-                {/* ✅ Estado sanitario */}
                 <div className="grid sm:grid-cols-3 gap-3">
                     <label className="inline-flex items-center gap-2">
                         <input type="checkbox" className="h-4 w-4" {...register('vaccinated')} />

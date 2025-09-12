@@ -19,6 +19,7 @@ export function useCreateAnimalMultipart(): Result {
         setLoading(true);
         setError(null);
         setData(null);
+        console.log({ fd });
 
         const base = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000';
         const res = await fetch(`${base}/animals`, {
