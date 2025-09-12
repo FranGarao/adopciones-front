@@ -1,0 +1,83 @@
+'use client';
+import { useState } from 'react';
+import { AnimalSex, AnimalSize, AnimalType } from '../types/animal';
+
+export interface Filters {
+    q: string;
+    type: AnimalType | 'ALL';
+    size: AnimalSize | 'ALL';
+    sex: AnimalSex | 'ALL';
+}
+
+
+export default function FilterBar({ onChange }: { onChange: (f: Filters) => void }) {
+    const [filters, setFilters] = useState<Filters>({ q: '', type: 'ALL', size: 'ALL', sex: 'ALL' });
+
+
+    const update = (patch: Partial<Filters>) => {
+        const next = { ...filters, ...patch };
+        setFilters(next);
+        onChange(next);
+    };
+
+
+    return (
+        <div className="flex flex-col md:flex-row gap-3 md:items-end">
+            <div className="flex-1">
+                <label className="block text-sm font-medium mb-1">Búsqueda</label>
+                <input
+                    type="text"
+                    placeholder="Nombre, raza, ciudad..."
+                    className="w-full rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2"
+                    value={filters.q}
+                    onChange={(e) => update({ q: e.target.value })}
+                />
+            </div>
+
+
+            <div>
+                <label className="block text-sm font-medium mb-1">Tipo</label>
+                <select
+                    className="rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2"
+                    value={filters.type}
+                    onChange={(e) => update({ type: e.target.value as Filters['type'] })}
+                >
+                    <option value="ALL">Todos</option>
+                    <option value="DOG">Perro</option>
+                    <option value="CAT">Gato</option>
+                    <option value="OTHER">Otro</option>
+                </select>
+            </div>
+
+
+            <div>
+                <label className="block text-sm font-medium mb-1">Tamaño</label>
+                <select
+                    className="rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2"
+                    value={filters.size}
+                    onChange={(e) => update({ size: e.target.value as Filters['size'] })}
+                >
+                    <option value="ALL">Todos</option>
+                    <option value="SMALL">Pequeño</option>
+                    <option value="MEDIUM">Mediano</option>
+                    <option value="LARGE">Grande</option>
+                    <option value="XL">XL</option>
+                </select>
+            </div>
+
+
+            <div>
+                <label className="block text-sm font-medium mb-1">Sexo</label>
+                <select
+                    className="rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2"
+                    value={filters.sex}
+                    onChange={(e) => update({ sex: e.target.value as Filters['sex'] })}
+                >
+                    <option value="ALL">Todos</option>
+                    <option value="MALE">Macho</option>
+                    <option value="FEMALE">Hembra</option>
+                </select>
+            </div>
+        </div>
+    );
+}
