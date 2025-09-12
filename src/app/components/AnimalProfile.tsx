@@ -1,6 +1,8 @@
 "use client";
 import { Animal, AnimalSex, AnimalSize, AnimalType } from "../types/animal";
 import React, { useState } from "react";
+import { useAnimalsStore } from "../store/useAnimalsStore";
+import Link from "next/link";
 
 type Props = {
     animal: Animal;
@@ -39,6 +41,7 @@ export function AnimalProfile({
     onAdopt?: (animal: Animal) => void;
     showAdoptButton?: boolean;
 }) {
+    const setAnimal = useAnimalsStore((s) => s.setAnimal);
     return (
         <div className="w-full max-w-4xl mx-auto rounded-2xl shadow-lg bg-white text-gray-900 overflow-hidden">
             <div className="grid md:grid-cols-2">
@@ -92,12 +95,13 @@ export function AnimalProfile({
 
 
                     {showAdoptButton && (
-                        <button
-                            onClick={() => onAdopt?.(animal)}
+                        <Link
+                            href={`/adopt/${animal.id}`}
+                            onClick={() => setAnimal(animal)}
                             className="mt-6 w-full md:w-auto px-5 py-2 rounded-xl bg-red-500 text-white hover:bg-red-600 transition"
                         >
                             Quiero adoptar
-                        </button>
+                        </Link>
                     )}
                 </div>
             </div>
