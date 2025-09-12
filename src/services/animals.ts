@@ -19,7 +19,6 @@ export interface PaginatedAnimals {
 
 
 export async function listAnimals(params: ListAnimalsParams): Promise<PaginatedAnimals> {
-    // Ajustá los nombres de query según tu API real
     const { data } = await api.get<PaginatedAnimals>('/animals', {
         params: {
             q: params.q || undefined,

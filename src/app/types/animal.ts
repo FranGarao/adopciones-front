@@ -14,4 +14,10 @@ export interface Animal {
     location?: string | null; // ciudad / provincia
     imageUrl?: string | null;
     createdAt?: string; // ISO
+    gallery?: string[];
+    tags?: string[];
+    vaccinated?: boolean;
+    dewormed?: boolean;
+    castrated?: boolean;
+    description?: string | null;
 }

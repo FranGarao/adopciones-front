@@ -2,9 +2,11 @@
 import { Animal } from '../types/animal';
 import { monthsToFriendly } from '../../lib/utils';
 import Image from 'next/image';
-
+import Link from 'next/link';
+import { useAnimalsStore } from '../store/useAnimalsStore';
 
 export default function AnimalCard({ animal }: { animal: Animal }) {
+    const setAnimal = useAnimalsStore((s) => s.setAnimal);
 
     const imageUrl = animal.imageUrl || '/animals/placeholder.jpg';
     const age = animal.age_months ? monthsToFriendly(animal.age_months) : 'Unknown';
@@ -44,18 +46,22 @@ export default function AnimalCard({ animal }: { animal: Animal }) {
 
 
                 <div className="mt-3 flex items-center gap-2">
-                    <a
+                    <Link
                         href={`/animals/${animal.id}`}
+                        prefetch={false}
+                        onClick={() => setAnimal(animal)}
                         className="px-3 py-2 text-sm rounded-xl border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800"
                     >
                         Ver ficha
-                    </a>
-                    <a
+                    </Link>
+                    <Link
                         href={`/adopt/${animal.id}`}
+                        onClick={() => setAnimal(animal)}
                         className="px-3 py-2 text-sm rounded-xl bg-rose-600 text-white font-semibold hover:bg-rose-700"
+                        prefetch={false}
                     >
                         Adoptar
-                    </a>
+                    </Link>
                 </div>
             </div>
         </article >
