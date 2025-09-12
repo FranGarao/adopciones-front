@@ -13,7 +13,7 @@ export default function Hero() {
                     </p>
                     <div className="mt-5 flex gap-3">
                         <a href="#listado" className="px-4 py-2 rounded-xl bg-rose-600 text-white font-semibold hover:bg-rose-700 transition">Ver animales</a>
-                        <a href="#como-funciona" className="px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 font-semibold hover:bg-white/60 dark:hover:bg-white/5 transition">Cómo funciona</a>
+                        <a href="#about" className="px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 font-semibold hover:bg-white/60 dark:hover:bg-white/5 transition">Cómo funciona</a>
                     </div>
                 </div>
                 <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow">

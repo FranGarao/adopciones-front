@@ -4,6 +4,7 @@ import FilterBar, { type Filters } from './components/FilterBar';
 import AnimalGrid from './components/AnimalGrid';
 import { useAnimals } from '../hooks/useAnimals';
 import { useState } from 'react';
+import AboutPage from './components/About';
 
 
 export default function Home() {
@@ -49,6 +50,9 @@ export default function Home() {
             </div>
           </>
         )}
+      </section>
+      <section id="about" className="space-y-4">
+        <AboutPage />
       </section>
     </main>
   );

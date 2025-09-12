@@ -29,6 +29,7 @@ export async function listAnimals(params: ListAnimalsParams): Promise<PaginatedA
             offset: params.offset ?? 0,
         },
     });
+    console.log({ data1: data });
     return data;
 }
 

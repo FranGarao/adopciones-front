@@ -17,6 +17,8 @@ export function useAnimals(filters: Filters, pageSize = 24) {
                 limit: pageSize,
                 offset: pageParam,
             });
+            console.log(data);
+
             return { data, total, offset: pageParam };
         },
         initialPageParam: 0,

@@ -1,0 +1,3 @@
+al recargar la pagina en el formulario de adopcion o la ficha, pegarle a la api para que traiga al rrope 
+
+- agregar login para los admins
