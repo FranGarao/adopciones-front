@@ -14,7 +14,8 @@ export function NavBar() {
                 </h1>
                 {/* Opcional: enlaces de navegación */}
                 <nav className="hidden sm:flex items-center gap-4 text-sm">
-                    <Link href="/#listado" className="opacity-80 hover:opacity-100">Animales</Link>
+                    <Link href="/" className="opacity-80 hover:opacity-100">Inicio</Link>
+                    <Link href="/animals" className="opacity-80 hover:opacity-100">Animales</Link>
                     <Link href="/#about" className="opacity-80 hover:opacity-100">Sobre nosotros</Link>
                 </nav>
             </div>

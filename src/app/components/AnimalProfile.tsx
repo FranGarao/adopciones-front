@@ -19,13 +19,13 @@ const pretty = {
 };
 
 function ImgWithFallback({ src, alt, className }: { src?: string | null; alt: string; className?: string }) {
-    const [fallbackSrc, setFallbackSrc] = useState(src ?? "/placeholder.jpg");
+    const [fallbackSrc, setFallbackSrc] = useState(src ?? "/placeholders/placeholder.jpg");
     return (
         <img
             src={fallbackSrc}
             alt={alt}
             className={className}
-            onError={() => setFallbackSrc("/placeholder.jpg")}
+            onError={() => setFallbackSrc("/placeholders/placeholder.jpg")}
             loading="lazy"
         />
     );

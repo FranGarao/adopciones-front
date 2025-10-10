@@ -87,7 +87,7 @@ export function AdoptionForm({
             {/* Header del formulario */}
             <header className="m-6 mt-3 rounded-xl border border-zinc-200 p-4 flex items-center gap-4" style={{ background: `linear-gradient(to right, ${VERDE_MUY_CLARO}, ${BLANCO_HUESO})` }}>
                 <Image
-                    src={animal.imageUrl || "/animals/placeholder.jpg"}
+                    src={animal.imageUrl || "/animals/placeholders/placeholder.jpg"}
                     alt={animal.name}
                     className="h-16 w-20 rounded-lg object-cover ring-1 ring-zinc-200 dark:ring-zinc-800"
                     width={80}

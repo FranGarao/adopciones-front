@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { useCreateAnimalMultipart } from '../../../hooks/useCreateAnimalMultipart';
 import type { AnimalSex, AnimalSize, AnimalType } from '@/app/types/animal';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { VERDE_PRINCIPAL, VERDE_ACENTO, VERDE_MUY_CLARO, BLANCO_HUESO, CASI_NEGRO, VERDE_GRISACEO } from '../../../Constants/colors';
 import Swal from 'sweetalert2';
 
@@ -38,6 +38,8 @@ type FormValues = z.infer<typeof schema> & {
 };
 
 export default function CreateAnimalForm() {
+    const [mainFile, setMainFile] = useState<File | null>(null);
+    const [galleryFiles, setGalleryFiles] = useState<FileList | null>(null);
     const router = useRouter();
     const { createAnimalMultipart, loading } = useCreateAnimalMultipart();
 
@@ -59,9 +61,6 @@ export default function CreateAnimalForm() {
         },
     });
 
-    // previews
-    const mainFile = watch('main')?.[0];
-    const galleryFiles = watch('gallery');
     const mainPreview = useMemo(() => (mainFile ? URL.createObjectURL(mainFile) : null), [mainFile]);
     const galleryPreviews = useMemo(
         () => (galleryFiles ? Array.from(galleryFiles).map((f) => URL.createObjectURL(f)) : []),
@@ -80,8 +79,59 @@ export default function CreateAnimalForm() {
     const btnOutline =
         'px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800';
 
+    // async function onSubmit(values: FormValues) {
+    //     const fd = new FormData();
+    //     fd.append('name', values.name);
+    //     if (values.description) fd.append('description', values.description);
+    //     fd.append('type', values.type);
+    //     fd.append('sex', values.sex);
+    //     fd.append('size', values.size);
+    //     if (values.age_months != null) fd.append('age_months', String(values.age_months));
+    //     if (values.breed) fd.append('breed', values.breed);
+    //     if (values.location) fd.append('location', values.location);
+
+    //     // archivos
+    //     if (values.main?.[0]) {
+    //         fd.append('main', values.main[0]);
+    //     } else if (values.imageUrl) {
+    //         fd.append('imageUrl', values.imageUrl);
+    //     }
+    //     if (values.gallery && values.gallery.length > 0) {
+    //         Array.from(values.gallery).forEach((file) => fd.append('gallery', file));
+    //     }
+
+    //     // ✅ flags sanitarios como strings (el back los parsea)
+    //     fd.append('vaccinated', String(values.vaccinated));
+    //     fd.append('dewormed', String(values.dewormed));
+    //     fd.append('castrated', String(values.castrated));
+
+
+    //     console.log('fd', fd);
+
+    //     await createAnimalMultipart(fd);
+
+    //     reset();
+
+    //     Swal.fire({
+    //         title: 'Animal creado',
+    //         text: 'El animal ha sido creado correctamente',
+    //         icon: 'success',
+    //     });
+
+    //     router.refresh();
+    //     // router.push(`/animals/${created.id}`);
+    // }
+
+
+
+    // En CreateAnimalForm.tsx, dentro de onSubmit(values)
+
+    // En CreateAnimalForm.tsx
+
     async function onSubmit(values: FormValues) {
         const fd = new FormData();
+
+        // 1. Adjuntar campos de texto (usando RHF)
         fd.append('name', values.name);
         if (values.description) fd.append('description', values.description);
         fd.append('type', values.type);
@@ -91,36 +141,37 @@ export default function CreateAnimalForm() {
         if (values.breed) fd.append('breed', values.breed);
         if (values.location) fd.append('location', values.location);
 
-        // archivos
-        if (values.main?.[0]) {
-            fd.append('main', values.main[0]);
-        } else if (values.imageUrl) {
-            fd.append('imageUrl', values.imageUrl);
-        }
-        if (values.gallery && values.gallery.length > 0) {
-            Array.from(values.gallery).forEach((file) => fd.append('gallery', file));
+        // 2. Adjuntar la Imagen Principal (USANDO EL ESTADO MANUAL)
+        if (mainFile) {
+            // La clave 'main' es la que busca Multer en el backend
+            fd.append('main', mainFile, mainFile.name);
+            console.log('FormData listo. Archivo main presente:', true);
         }
 
-        // ✅ flags sanitarios como strings (el back los parsea)
+        // 3. Adjuntar la Galería (USANDO EL ESTADO MANUAL)
+        // CRÍTICO: Usar galleryFiles (el estado) en lugar de values.gallery (RHF)
+        if (galleryFiles && galleryFiles.length > 0) {
+            Array.from(galleryFiles).forEach((file) => {
+                // Adjuntar cada archivo con la misma clave 'gallery'
+                fd.append('gallery', file, file.name);
+            });
+            console.log(`FormData listo. Archivos de galería presentes: ${galleryFiles.length}`);
+        }
+
+        // 4. Flags sanitarios como strings
         fd.append('vaccinated', String(values.vaccinated));
         fd.append('dewormed', String(values.dewormed));
         fd.append('castrated', String(values.castrated));
 
-
-        console.log('fd', fd);
+        console.log('FormData listo:', fd);
 
         await createAnimalMultipart(fd);
 
         reset();
-
-        Swal.fire({
-            title: 'Animal creado',
-            text: 'El animal ha sido creado correctamente',
-            icon: 'success',
-        });
-
-        router.refresh();
+        Swal.fire({ title: 'Animal creado', text: 'El animal ha sido creado correctamente', icon: 'success' });
+        //TODO: router.refresh();
         // router.push(`/animals/${created.id}`);
+
     }
 
     return (
@@ -203,7 +254,13 @@ export default function CreateAnimalForm() {
                 <div className="grid md:grid-cols-2 gap-4">
                     <div>
                         <label className={label}>Imagen principal (archivo)</label>
-                        <input type="file" accept="image/*" {...register('main' as any)} className={input} />
+                        <input
+                            type="file"
+                            accept="image/*"
+                            // No uses register, usa onChange y value/ref
+                            onChange={(e) => setMainFile(e.target.files ? e.target.files[0] : null)}
+                            className={input}
+                        />
                         {mainPreview && (
                             <img
                                 src={mainPreview}
@@ -216,7 +273,7 @@ export default function CreateAnimalForm() {
 
                     <div>
                         <label className={label}>Galería (archivos múltiples)</label>
-                        <input type="file" accept="image/*" multiple {...register('gallery' as any)} className={input} />
+                        <input type="file" accept="image/*" multiple onChange={(e) => setGalleryFiles(e.target.files)} className={input} />
                         {galleryPreviews.length > 0 && (
                             <div className="mt-2 flex gap-2 overflow-x-auto">
                                 {galleryPreviews.map((src, i) => (

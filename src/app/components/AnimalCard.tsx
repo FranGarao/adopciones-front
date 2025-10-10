@@ -9,7 +9,7 @@ import { VERDE_PRINCIPAL, VERDE_ACENTO, BLANCO_HUESO, CASI_NEGRO } from '../../C
 export default function AnimalCard({ animal }: { animal: Animal }) {
     const setAnimal = useAnimalsStore((s) => s.setAnimal);
 
-    const imageUrl = animal.imageUrl || '/animals/placeholder.jpg';
+    const imageUrl = animal.imageUrl || '/animals/placeholders/placeholder.jpg';
     const age = animal.age_months ? monthsToFriendly(animal.age_months) : 'Unknown';
     return (
         <article className="group rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition" style={{ backgroundColor: BLANCO_HUESO }}>
