@@ -14,7 +14,7 @@ export default function AnimalCard({ animal }: { animal: Animal }) {
     return (
         <article className="group rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition" style={{ backgroundColor: BLANCO_HUESO }}>
             <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow">
-                <Image src={imageUrl} alt={animal.name} fill
+                <Image src={`${process.env.NEXT_PUBLIC_IMAGES_URL}${imageUrl}`} alt={animal.name} fill
                     className="object-cover group-hover:scale-105 transition"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />

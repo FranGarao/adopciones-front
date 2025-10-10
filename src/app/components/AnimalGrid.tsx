@@ -5,6 +5,7 @@ import { CASI_NEGRO } from '../../Constants/colors';
 
 
 export default function AnimalGrid({ animals }: { animals: Animal[] }) {
+    console.log({ animals });
     if (!animals.length) {
         return (
             <div className="text-center py-16" style={{ color: CASI_NEGRO + '99' }}>No se encontraron animales con esos filtros 🐾</div>
