@@ -225,22 +225,17 @@ export default function CreateAnimalForm() {
                                 <option value="SMALL">Chico</option>
                                 <option value="MEDIUM">Mediano</option>
                                 <option value="LARGE">Grande</option>
-                                <option value="XL">XL</option>
                             </select>
                         </div>
                     </div>
 
                     <div>
-                        <label className={label}>Edad (meses)</label>
+                        <label className={label}>Edad (años)</label>
                         <input className={input} type="number" min={0} placeholder="Ej: 18" {...register('age_months')} />
                         {errors.age_months && <p className="mt-1 text-xs text-rose-600">{errors.age_months.message as string}</p>}
                     </div>
 
-                    <div>
-                        <label className={label}>Ubicación</label>
-                        <input className={input} placeholder="Ej: Quilmes, Buenos Aires" {...register('location')} />
-                        {errors.location && <p className="mt-1 text-xs text-rose-600">{errors.location.message as string}</p>}
-                    </div>
+
                 </div>
 
                 {/* Descripción */}
@@ -290,17 +285,25 @@ export default function CreateAnimalForm() {
                 </div>
 
                 <div className="grid sm:grid-cols-3 gap-3">
-                    <label className="inline-flex items-center gap-2">
+                    {/* <label className="inline-flex items-center gap-2">
                         <input type="checkbox" className="h-4 w-4" {...register('vaccinated')} />
                         <span>Vacunado</span>
                     </label>
                     <label className="inline-flex items-center gap-2">
                         <input type="checkbox" className="h-4 w-4" {...register('dewormed')} />
                         <span>Desparasitado</span>
-                    </label>
+                    </label> */}
                     <label className="inline-flex items-center gap-2">
                         <input type="checkbox" className="h-4 w-4" {...register('castrated')} />
                         <span>Castrado</span>
+                    </label>
+                    <label className="inline-flex items-center gap-2">
+                        <input type="checkbox" className="h-4 w-4" {...register('castrated')} />
+                        <span>Va con otras mascotas</span>
+                    </label>
+                    <label className="inline-flex items-center gap-2">
+                        <input type="checkbox" className="h-4 w-4" {...register('castrated')} />
+                        <span>Va con niños</span>
                     </label>
                 </div>
 

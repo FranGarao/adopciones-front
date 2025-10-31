@@ -3,9 +3,18 @@ import Image from 'next/image';
 import { VERDE_PRINCIPAL, VERDE_ACENTO, VERDE_MUY_CLARO, BLANCO_HUESO, CASI_NEGRO } from '../../Constants/colors';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Swal from 'sweetalert2';
 
 
 export default function Hero() {
+
+    const littleDogAlert = () => {
+        Swal.fire({
+            title: 'Atención',
+            html: 'Los cachorros los publicamos en nuestro perfil de Instagram <b><a href="https://www.instagram.com/adopcionesquilmes" target="_blank">@adopcionesquilmes</a></b> con un numero particular.',
+            icon: 'warning',
+        });
+    };
     return (
         <section className="relative overflow-hidden rounded-2xl p-6 md:p-10" style={{ background: `linear-gradient(to bottom right, ${VERDE_MUY_CLARO}, ${BLANCO_HUESO})` }}>
             <div className="max-w-5xl mx-auto grid gap-6 md:grid-cols-2 md:items-center">
@@ -15,9 +24,11 @@ export default function Hero() {
                         Encontrá perros y gatos listos para dar amor. Filtrá por tamaño, edad y ubicación.
                     </p>
                     <div className="mt-5 flex gap-3">
-                        <Link href="/animals" className="px-4 py-2 rounded-xl text-white font-semibold transition-colors" style={{ backgroundColor: VERDE_PRINCIPAL }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = VERDE_ACENTO} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = VERDE_PRINCIPAL}>Ver animales</Link>
-                        <a href="#about" className="px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 font-semibold hover:bg-white/60 dark:hover:bg-white/5 transition">Cómo funciona</a>
+                        <Link href="/animals" className="px-4 py-2 rounded-xl text-white font-semibold transition-colors" style={{ backgroundColor: VERDE_PRINCIPAL }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = VERDE_ACENTO} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = VERDE_PRINCIPAL}>Ver Perros</Link>
+                        <Link href="/animals" className="px-4 py-2 rounded-xl text-white font-semibold transition-colors" style={{ backgroundColor: VERDE_PRINCIPAL }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = VERDE_ACENTO} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = VERDE_PRINCIPAL}>Ver Gatos</Link>
+                        <span onClick={littleDogAlert} className="px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 font-semibold hover:bg-white/60 dark:hover:bg-white/5 transition">Ver Cachorros</span>
                     </div>
+
                 </div>
 
                 <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow">
@@ -78,6 +89,6 @@ export default function Hero() {
                     })()}
                 </div>
             </div>
-        </section>
+        </section >
     );
 }

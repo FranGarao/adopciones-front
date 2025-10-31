@@ -28,14 +28,9 @@ export default function AboutPage() {
                         onMouseEnter={(e) => e.currentTarget.style.backgroundColor = VERDE_ACENTO}
                         onMouseLeave={(e) => e.currentTarget.style.backgroundColor = VERDE_PRINCIPAL}
                     >
-                        Ver animales en adopción
+                        PETSHOP
                     </Link>
-                    <a
-                        href="mailto:adopciones@adopcionesquilmes.org?subject=Quiero%20colaborar"
-                        className="px-5 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800"
-                    >
-                        Quiero colaborar
-                    </a>
+
                 </div>
             </section>
 
@@ -78,12 +73,7 @@ export default function AboutPage() {
                                 adopciones@adopcionesquilmes.org
                             </a>
                         </li>
-                        <li>
-                            WhatsApp:{" "}
-                            <a className="hover:underline" href="https://wa.me/5491155555555" target="_blank" rel="noopener noreferrer">
-                                +54 9 11 5555-5555
-                            </a>
-                        </li>
+
                         <li>
                             Instagram:{" "}
                             <a className="hover:underline" href="https://instagram.com/adopcionesquilmes" target="_blank" rel="noopener noreferrer">
@@ -96,9 +86,7 @@ export default function AboutPage() {
                 <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-5">
                     <h3 className="font-semibold">Horarios</h3>
                     <ul className="mt-2 text-sm text-zinc-700 dark:text-zinc-300">
-                        <li>Lun a Sáb: 10:00 – 18:00</li>
-                        <li>Domingos: 10:00 – 14:00</li>
-                        <li className="mt-2">* Visitas con turno previo.</li>
+                        <li>Lun a Dom: 09:00 – 16:00</li>
                     </ul>
                 </div>
             </section>
