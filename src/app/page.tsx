@@ -7,6 +7,8 @@ import { useEffect, useState } from 'react';
 import AboutPage from './components/About';
 import { CASI_NEGRO } from '../Constants/colors';
 import AnimalList from './components/AnimalList';
+import HomeSections from './components/HomeSections';
+import DonationSection from './components/DonationSection';
 
 
 export default function Home() {
@@ -18,6 +20,14 @@ export default function Home() {
 
       <section id="about" className="space-y-4">
         <AboutPage />
+      </section>
+
+      <section id="home-sections" className="space-y-4">
+        <HomeSections />
+      </section>
+
+      <section id="donations" className="space-y-4">
+        <DonationSection />
       </section>
     </main>
   );

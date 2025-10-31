@@ -2,9 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import CreateAnimalForm from "./Components/CreateAnimalForm";
+import SectionsManager from "./Components/SectionsManager";
 import { api } from "@/lib/api";
 // import router from "next/router";
 import Swal from "sweetalert2";
+import { VERDE_PRINCIPAL, VERDE_ACENTO, CASI_NEGRO, BLANCO_HUESO } from "@/Constants/colors";
 
 const LOCK_DURATION_MS = 5 * 60 * 1000; // 5 minutes
 const LOCK_KEY = "admin_lock_until";
@@ -33,6 +35,8 @@ export default function AdminPage() {
     });
     const [now, setNow] = useState(Date.now());
     const [loading, setLoading] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [activeTab, setActiveTab] = useState<'animals' | 'sections'>('animals');
 
     // Sync localStorage on mount in case localStorage was changed externally while the component was not mounted
     useEffect(() => {
@@ -155,11 +159,11 @@ export default function AdminPage() {
         setBadAttempts(0);
         setLockedUntil(null);
         setError(null);
+        setIsAuthenticated(true);
         if (typeof window !== "undefined") {
             localStorage.removeItem(ATTEMPTS_KEY);
             localStorage.removeItem(LOCK_KEY);
         }
-        // proceed to actual "admin" area, etc.
     };
 
     const getLockoutMessage = () => {
@@ -172,60 +176,125 @@ export default function AdminPage() {
             .padStart(2, "0")} minutes.`;
     };
 
+    const handleLogout = () => {
+        setIsAuthenticated(false);
+        setSk('');
+        setEmail('');
+        setPassword('');
+        setError(null);
+    };
+
+    if (!isAuthenticated) {
+        return (
+            <div className="flex items-center justify-center min-h-screen bg-gray-100">
+                <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-sm">
+                    <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">
+                        Login
+                    </h1>
+                    <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+                        <input
+                            type="password"
+                            required
+                            placeholder="SK"
+                            value={sk}
+                            disabled={isLocked || loading}
+                            onChange={(e) => setSk(e.target.value)}
+                            className="px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-400 transition"
+                        />
+                        <input
+                            type="text"
+                            required
+                            placeholder="Email"
+                            value={email}
+                            disabled={isLocked || loading}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-400 transition"
+                        />
+                        <input
+                            type="password"
+                            required
+                            placeholder="Password"
+                            value={password}
+                            disabled={isLocked || loading}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-400 transition"
+                        />
+                        <button
+                            type="submit"
+                            disabled={isLocked || loading}
+                            className={`bg-green-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-green-700 transition ${isLocked || loading ? "opacity-50 cursor-not-allowed" : ""
+                                }`}
+                        >
+                            {loading ? "Logging in..." : "Login"}
+                        </button>
+                    </form>
+                    {error && (
+                        <div className="mt-4 text-red-600 text-sm text-center">
+                            {error}
+                        </div>
+                    )}
+                    {isLocked && (
+                        <div className="mt-2 text-yellow-700 text-xs text-center">
+                            {getLockoutMessage()}
+                        </div>
+                    )}
+                </div>
+            </div>
+        );
+    }
+
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
-            <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-sm">
-                <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">
-                    Login
-                </h1>
-                <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-                    <input
-                        type="password"
-                        required
-                        placeholder="SK"
-                        value={sk}
-                        disabled={isLocked || loading}
-                        onChange={(e) => setSk(e.target.value)}
-                        className="px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-400 transition"
-                    />
-                    <input
-                        type="text"
-                        required
-                        placeholder="Email"
-                        value={email}
-                        disabled={isLocked || loading}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-400 transition"
-                    />
-                    <input
-                        type="password"
-                        required
-                        placeholder="Password"
-                        value={password}
-                        disabled={isLocked || loading}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-400 transition"
-                    />
+        <div className="min-h-screen" style={{ backgroundColor: BLANCO_HUESO }}>
+            <div className="max-w-6xl mx-auto px-4 py-6">
+                {/* Header */}
+                <div className="flex justify-between items-center mb-8">
+                    <h1 className="text-3xl font-bold" style={{ color: CASI_NEGRO }}>
+                        Panel de Administración
+                    </h1>
                     <button
-                        type="submit"
-                        disabled={isLocked || loading}
-                        className={`bg-green-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-green-700 transition ${isLocked || loading ? "opacity-50 cursor-not-allowed" : ""
-                            }`}
+                        onClick={handleLogout}
+                        className="px-4 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-50 transition-colors"
+                        style={{ color: CASI_NEGRO }}
                     >
-                        {loading ? "Logging in..." : "Login"}
+                        Cerrar Sesión
                     </button>
-                </form>
-                {error && (
-                    <div className="mt-4 text-red-600 text-sm text-center">
-                        {error}
-                    </div>
-                )}
-                {isLocked && (
-                    <div className="mt-2 text-yellow-700 text-xs text-center">
-                        {getLockoutMessage()}
-                    </div>
-                )}
-                {/* <CreateAnimalForm /> */}
+                </div>
+
+                {/* Tabs */}
+                <div className="flex space-x-1 mb-6">
+                    <button
+                        onClick={() => setActiveTab('animals')}
+                        className={`px-4 py-2 rounded-xl font-medium transition-colors ${activeTab === 'animals'
+                            ? 'text-white'
+                            : 'border border-zinc-300 hover:bg-zinc-50'
+                            }`}
+                        style={{
+                            backgroundColor: activeTab === 'animals' ? VERDE_PRINCIPAL : 'transparent',
+                            color: activeTab === 'animals' ? 'white' : CASI_NEGRO
+                        }}
+                    >
+                        Gestión de Animales
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('sections')}
+                        className={`px-4 py-2 rounded-xl font-medium transition-colors ${activeTab === 'sections'
+                            ? 'text-white'
+                            : 'border border-zinc-300 hover:bg-zinc-50'
+                            }`}
+                        style={{
+                            backgroundColor: activeTab === 'sections' ? VERDE_PRINCIPAL : 'transparent',
+                            color: activeTab === 'sections' ? 'white' : CASI_NEGRO
+                        }}
+                    >
+                        Secciones del Home
+                    </button>
+                </div>
+
+                {/* Content */}
+                <div className="space-y-6">
+                    {activeTab === 'animals' && <CreateAnimalForm />}
+                    {activeTab === 'sections' && <SectionsManager />}
+                </div>
             </div>
         </div>
     );

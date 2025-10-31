@@ -11,7 +11,7 @@ export interface Filters {
 }
 
 
-export default function FilterBar({ onChange }: { onChange: (f: Filters) => void }) {
+export default function FilterBar({ onChange, hideTypeFilter = false }: { onChange: (f: Filters) => void, hideTypeFilter?: boolean }) {
     const [filters, setFilters] = useState<Filters>({ q: '', type: 'ALL', size: 'ALL', sex: 'ALL' });
 
 
@@ -37,20 +37,22 @@ export default function FilterBar({ onChange }: { onChange: (f: Filters) => void
             </div>
 
 
-            <div>
-                <label className="block text-sm font-medium mb-1">Tipo</label>
-                <select
-                    className="rounded-xl border border-zinc-300 px-3 py-2"
-                    style={{ backgroundColor: BLANCO_HUESO, color: CASI_NEGRO }}
-                    value={filters.type}
-                    onChange={(e) => update({ type: e.target.value as Filters['type'] })}
-                >
-                    <option value="ALL">Todos</option>
-                    <option value="DOG">Perro</option>
-                    <option value="CAT">Gato</option>
-                    <option value="OTHER">Otro</option>
-                </select>
-            </div>
+            {!hideTypeFilter && (
+                <div>
+                    <label className="block text-sm font-medium mb-1">Tipo</label>
+                    <select
+                        className="rounded-xl border border-zinc-300 px-3 py-2"
+                        style={{ backgroundColor: BLANCO_HUESO, color: CASI_NEGRO }}
+                        value={filters.type}
+                        onChange={(e) => update({ type: e.target.value as Filters['type'] })}
+                    >
+                        <option value="ALL">Todos</option>
+                        <option value="DOG">Perro</option>
+                        <option value="CAT">Gato</option>
+                        <option value="OTHER">Otro</option>
+                    </select>
+                </div>
+            )}
 
 
             <div>

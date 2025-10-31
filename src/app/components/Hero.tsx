@@ -24,8 +24,8 @@ export default function Hero() {
                         Encontrá perros y gatos listos para dar amor. Filtrá por tamaño, edad y ubicación.
                     </p>
                     <div className="mt-5 flex gap-3">
-                        <Link href="/animals" className="px-4 py-2 rounded-xl text-white font-semibold transition-colors" style={{ backgroundColor: VERDE_PRINCIPAL }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = VERDE_ACENTO} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = VERDE_PRINCIPAL}>Ver Perros</Link>
-                        <Link href="/animals" className="px-4 py-2 rounded-xl text-white font-semibold transition-colors" style={{ backgroundColor: VERDE_PRINCIPAL }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = VERDE_ACENTO} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = VERDE_PRINCIPAL}>Ver Gatos</Link>
+                        <Link href="/dogs" className="px-4 py-2 rounded-xl text-white font-semibold transition-colors" style={{ backgroundColor: VERDE_PRINCIPAL }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = VERDE_ACENTO} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = VERDE_PRINCIPAL}>Ver Perros</Link>
+                        <Link href="/cats" className="px-4 py-2 rounded-xl text-white font-semibold transition-colors" style={{ backgroundColor: VERDE_PRINCIPAL }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = VERDE_ACENTO} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = VERDE_PRINCIPAL}>Ver Gatos</Link>
                         <span onClick={littleDogAlert} className="px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 font-semibold hover:bg-white/60 dark:hover:bg-white/5 transition">Ver Cachorros</span>
                     </div>
 
