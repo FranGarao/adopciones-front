@@ -10,25 +10,52 @@ import { useMemo, useState } from 'react';
 import { VERDE_PRINCIPAL, VERDE_ACENTO, VERDE_MUY_CLARO, BLANCO_HUESO, CASI_NEGRO, VERDE_GRISACEO } from '../../../Constants/colors';
 import Swal from 'sweetalert2';
 
+// Revisado: algunos problemas comunes en Zod y RHF para formularios incluyen:
+// - nullable+optional puede causar fallback a `undefined` y RHF puede enviar '' string en vez de `null`
+// - Los strings optional().nullable() suelen aceptar '' y ese '' entra como undefined, lo que a veces causa problemas según el schema
+// - RHF puede mandar string vacío '' en vez de undefined/null a optional/nullable, sobre todo para inputs vacíos
+// - Para boolean RHF, defaults siempre ayudan
+
 const schema = z.object({
     name: z.string().min(2, 'Ingresá un nombre'),
-    description: z.string().max(2000).optional().nullable(),
-    type: z.enum(['DOG', 'CAT', 'OTHER'] as [AnimalType, ...AnimalType[]]),
-    sex: z.enum(['MALE', 'FEMALE', 'UNKNOWN'] as [AnimalSex, ...AnimalSex[]]),
-    size: z.enum(['SMALL', 'MEDIUM', 'LARGE', 'XL', 'UNKNOWN'] as [AnimalSize, ...AnimalSize[]]),
-    age_months: z
-        .preprocess((v) => (v === '' || v == null ? undefined : Number(v)), z.number().int().min(0).max(600).optional())
-        .or(z.null())
+    description: z
+        .string()
+        .max(2000, 'Máximo 2000 caracteres')
+        .transform(val => val === '' ? undefined : val)
         .optional(),
-    breed: z.string().max(120).optional().nullable(),
-    location: z.string().max(120).optional().nullable(),
-    imageUrl: z.string().url('URL inválida').optional().nullable().or(z.literal('')),
-    galleryText: z.string().optional().nullable(),
-
-    // ✅ Añadimos los flags sanitarios al schema
-    vaccinated: z.boolean().default(false),
-    dewormed: z.boolean().default(false),
+    type: z.enum(['DOG', 'CAT', 'OTHER']),
+    sex: z.enum(['MALE', 'FEMALE', 'UNKNOWN']),
+    size: z.enum(['SMALL', 'MEDIUM', 'LARGE', 'UNKNOWN']),
+    age: z
+        .preprocess(
+            (v) => {
+                // RHF puede mandar '' como string
+                if (v === '' || v == null) return undefined;
+                const num = Number(v);
+                return isNaN(num) ? undefined : num;
+            },
+            z.number().int('Edad debe ser un número entero').min(0, 'Edad mínima 0').max(600, 'Edad máxima 600').optional()
+        )
+        .optional(),
+    breed: z
+        .string()
+        .max(120, 'Máximo 120 caracteres')
+        .transform(val => val === '' ? undefined : val)
+        .optional(),
+    // location: z.string().max(120).optional().nullable(),
+    imageUrl: z
+        .string()
+        .url('URL inválida')
+        .or(z.literal(''))
+        .transform(val => val === '' ? undefined : val)
+        .optional(),
+    galleryText: z
+        .string()
+        .transform(val => val === '' ? undefined : val)
+        .optional(),
     castrated: z.boolean().default(false),
+    with_other_pets: z.boolean().default(false),
+    with_children: z.boolean().default(false),
 });
 
 // Extra fields para RHF (FileList)
@@ -55,9 +82,16 @@ export default function CreateAnimalForm() {
             type: 'DOG',
             sex: 'UNKNOWN',
             size: 'UNKNOWN',
-            vaccinated: false,
-            dewormed: false,
             castrated: false,
+            with_other_pets: false,
+            with_children: false,
+            // // Todos los strings opcionales en blanco
+            // name: '',
+            // breed: '',
+            // description: '',
+            // galleryText: '',
+            // imageUrl: '',
+            // age: undefined,
         },
     });
 
@@ -79,57 +113,9 @@ export default function CreateAnimalForm() {
     const btnOutline =
         'px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800';
 
-    // async function onSubmit(values: FormValues) {
-    //     const fd = new FormData();
-    //     fd.append('name', values.name);
-    //     if (values.description) fd.append('description', values.description);
-    //     fd.append('type', values.type);
-    //     fd.append('sex', values.sex);
-    //     fd.append('size', values.size);
-    //     if (values.age_months != null) fd.append('age_months', String(values.age_months));
-    //     if (values.breed) fd.append('breed', values.breed);
-    //     if (values.location) fd.append('location', values.location);
-
-    //     // archivos
-    //     if (values.main?.[0]) {
-    //         fd.append('main', values.main[0]);
-    //     } else if (values.imageUrl) {
-    //         fd.append('imageUrl', values.imageUrl);
-    //     }
-    //     if (values.gallery && values.gallery.length > 0) {
-    //         Array.from(values.gallery).forEach((file) => fd.append('gallery', file));
-    //     }
-
-    //     // ✅ flags sanitarios como strings (el back los parsea)
-    //     fd.append('vaccinated', String(values.vaccinated));
-    //     fd.append('dewormed', String(values.dewormed));
-    //     fd.append('castrated', String(values.castrated));
-
-
-    //     console.log('fd', fd);
-
-    //     await createAnimalMultipart(fd);
-
-    //     reset();
-
-    //     Swal.fire({
-    //         title: 'Animal creado',
-    //         text: 'El animal ha sido creado correctamente',
-    //         icon: 'success',
-    //     });
-
-    //     router.refresh();
-    //     // router.push(`/animals/${created.id}`);
-    // }
-
-
-
-    // En CreateAnimalForm.tsx, dentro de onSubmit(values)
-
-    // En CreateAnimalForm.tsx
-
     async function onSubmit(values: FormValues) {
         const fd = new FormData();
+        console.log(values.age);
 
         // 1. Adjuntar campos de texto (usando RHF)
         fd.append('name', values.name);
@@ -137,33 +123,28 @@ export default function CreateAnimalForm() {
         fd.append('type', values.type);
         fd.append('sex', values.sex);
         fd.append('size', values.size);
-        if (values.age_months != null) fd.append('age_months', String(values.age_months));
+        if (values.age !== undefined && values.age !== null && values.age !== '') fd.append('age', String(values.age));
         if (values.breed) fd.append('breed', values.breed);
-        if (values.location) fd.append('location', values.location);
 
         // 2. Adjuntar la Imagen Principal (USANDO EL ESTADO MANUAL)
         if (mainFile) {
             // La clave 'main' es la que busca Multer en el backend
             fd.append('main', mainFile, mainFile.name);
-            console.log('FormData listo. Archivo main presente:', true);
         }
 
         // 3. Adjuntar la Galería (USANDO EL ESTADO MANUAL)
-        // CRÍTICO: Usar galleryFiles (el estado) en lugar de values.gallery (RHF)
         if (galleryFiles && galleryFiles.length > 0) {
             Array.from(galleryFiles).forEach((file) => {
-                // Adjuntar cada archivo con la misma clave 'gallery'
                 fd.append('gallery', file, file.name);
             });
-            console.log(`FormData listo. Archivos de galería presentes: ${galleryFiles.length}`);
         }
 
         // 4. Flags sanitarios como strings
-        fd.append('vaccinated', String(values.vaccinated));
-        fd.append('dewormed', String(values.dewormed));
         fd.append('castrated', String(values.castrated));
+        fd.append('with_other_pets', String(values.with_other_pets));
+        fd.append('with_children', String(values.with_children));
 
-        console.log('FormData listo:', fd);
+        console.log(fd);
 
         await createAnimalMultipart(fd);
 
@@ -171,7 +152,6 @@ export default function CreateAnimalForm() {
         Swal.fire({ title: 'Animal creado', text: 'El animal ha sido creado correctamente', icon: 'success' });
         //TODO: router.refresh();
         // router.push(`/animals/${created.id}`);
-
     }
 
     return (
@@ -191,7 +171,7 @@ export default function CreateAnimalForm() {
                     <div>
                         <label className={label}>Nombre</label>
                         <input className={input} placeholder="Ej: Luna" {...register('name')} style={{ backgroundColor: BLANCO_HUESO, color: CASI_NEGRO, borderColor: VERDE_GRISACEO }} />
-                        {errors.name && <p className="mt-1 text-xs text-rose-600">{errors.name.message}</p>}
+                        {errors.name && <p className="mt-1 text-xs text-rose-600">{errors.name.message as string}</p>}
                     </div>
 
                     <div>
@@ -231,11 +211,9 @@ export default function CreateAnimalForm() {
 
                     <div>
                         <label className={label}>Edad (años)</label>
-                        <input className={input} type="number" min={0} placeholder="Ej: 18" {...register('age_months')} />
-                        {errors.age_months && <p className="mt-1 text-xs text-rose-600">{errors.age_months.message as string}</p>}
+                        <input className={input} type="number" min={0} placeholder="Ej: 18" {...register('age')} />
+                        {errors.age && <p className="mt-1 text-xs text-rose-600">{errors.age.message as string}</p>}
                     </div>
-
-
                 </div>
 
                 {/* Descripción */}
@@ -298,11 +276,11 @@ export default function CreateAnimalForm() {
                         <span>Castrado</span>
                     </label>
                     <label className="inline-flex items-center gap-2">
-                        <input type="checkbox" className="h-4 w-4" {...register('castrated')} />
+                        <input type="checkbox" className="h-4 w-4" {...register('with_other_pets')} />
                         <span>Va con otras mascotas</span>
                     </label>
                     <label className="inline-flex items-center gap-2">
-                        <input type="checkbox" className="h-4 w-4" {...register('castrated')} />
+                        <input type="checkbox" className="h-4 w-4" {...register('with_children')} />
                         <span>Va con niños</span>
                     </label>
                 </div>
