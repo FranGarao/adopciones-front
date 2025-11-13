@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useAnimalsStore } from '../store/useAnimalsStore';
 import { VERDE_PRINCIPAL, VERDE_ACENTO, BLANCO_HUESO, CASI_NEGRO } from '../../Constants/colors';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
 const PLACEHOLDER_PATH = '/animals/placeholders/placeholder.jpg';
 
@@ -40,8 +40,11 @@ export default function AnimalCard({ animal }: { animal: Animal }) {
     const [modalOpen, setModalOpen] = useState(false);
     const [modalIdx, setModalIdx] = useState(0);
 
-    // Nuevo estado para video modal
+    // Nuevo estado para video modal y url del video descargado
     const [videoModalOpen, setVideoModalOpen] = useState(false);
+    const [videoUrl, setVideoUrl] = useState<string | null>(null);
+    const [videoLoading, setVideoLoading] = useState(false);
+    const videoObjectUrlRef = useRef<string | null>(null);
 
     // Slider navigation
     const nextImage = (e: React.MouseEvent) => {
@@ -97,10 +100,60 @@ export default function AnimalCard({ animal }: { animal: Animal }) {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [videoModalOpen]);
 
-    // Encuentra el primer video (YouTube o mp4/mov/etc)
-    const animalVideo = animal?.videos && animal.videos.length > 0
-        ? animal.videos[0]
-        : null;
+    // Limpiar blob url cuando se cierra el modal
+    React.useEffect(() => {
+        if (!videoModalOpen) {
+            if (videoObjectUrlRef.current) {
+                URL.revokeObjectURL(videoObjectUrlRef.current);
+                videoObjectUrlRef.current = null;
+            }
+            setVideoUrl(null);
+            setVideoLoading(false);
+        }
+    }, [videoModalOpen]);
+
+    // Encuentra el primer video
+    const animalVideo = animal?.videos && animal.videos.length > 0 ? animal.videos[0] : null;
+
+    // Verifica si es un enlace de YouTube o similar (externo) 
+    const isExternalVideo = (url: string) =>
+        url.includes('youtube.com') || url.includes('youtu.be') || url.startsWith('http') && !url.includes('/api/');
+
+    // Maneja la carga del video desde el backend
+    const handleOpenVideoModal = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (!animalVideo) return;
+        if (isExternalVideo(animalVideo)) {
+            setVideoUrl(animalVideo);
+            setVideoModalOpen(true);
+            return;
+        }
+        // Si es backend, fetch del recurso (suponiendo que ya es una ruta absoluta o relativa del backend)
+        setVideoLoading(true);
+        setVideoUrl(null);
+        setVideoModalOpen(true);
+        try {
+            // Si la url ya es absoluta, úsala, si no, toma el backend base de .env
+            const backendBase = process.env.NEXT_PUBLIC_IMAGES_URL ?? '';
+            const absoluteUrl = animalVideo.startsWith('http') ? animalVideo : `${backendBase}${animalVideo}`;
+            const res = await fetch(absoluteUrl, {
+                method: 'GET',
+                // Agregar credentials, headers, auth si hace falta aquí
+            });
+            if (!res.ok) throw new Error('No se pudo obtener el video');
+            const blob = await res.blob();
+            // Limpiar urls anteriores
+            if (videoObjectUrlRef.current) {
+                URL.revokeObjectURL(videoObjectUrlRef.current);
+            }
+            const objectUrl = URL.createObjectURL(blob);
+            videoObjectUrlRef.current = objectUrl;
+            setVideoUrl(objectUrl);
+        } catch (err) {
+            setVideoUrl(null);
+        }
+        setVideoLoading(false);
+    };
 
     return (
         <>
@@ -172,10 +225,7 @@ export default function AnimalCard({ animal }: { animal: Animal }) {
                             title="Ver video"
                             className="absolute right-2 bottom-2 z-10 bg-black/50 text-white rounded-full p-2 hover:bg-emerald-700 transition cursor-pointer flex items-center"
                             style={{ boxShadow: "0 1px 8px #1112" }}
-                            onClick={e => {
-                                e.stopPropagation();
-                                setVideoModalOpen(true);
-                            }}
+                            onClick={handleOpenVideoModal}
                         >
                             <svg width={22} height={22} fill="currentColor" viewBox="0 0 20 20">
                                 <circle cx="10" cy="10" r="9" stroke="white" strokeWidth="1.5" fill="none" />
@@ -219,10 +269,7 @@ export default function AnimalCard({ animal }: { animal: Animal }) {
                             <button
                                 className="flex items-center gap-1 px-3 py-2 text-sm rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white hover:bg-zinc-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 transition"
                                 type="button"
-                                onClick={e => {
-                                    e.stopPropagation();
-                                    setVideoModalOpen(true);
-                                }}
+                                onClick={handleOpenVideoModal}
                             >
                                 <svg width={16} height={16} fill="currentColor" viewBox="0 0 20 20">
                                     <circle cx="10" cy="10" r="9" stroke="black" strokeWidth="1.5" fill="none" />
@@ -344,32 +391,59 @@ export default function AnimalCard({ animal }: { animal: Animal }) {
                         </button>
                         <div className="p-0 relative w-full h-[55vw] md:h-[410px] flex items-center justify-center bg-black/80">
                             {/* Mostrar video según el tipo */}
-                            {animalVideo.includes('youtube.com') || animalVideo.includes('youtu.be') ? (
-                                <iframe
-                                    src={
-                                        animalVideo.includes('embed')
-                                            ? animalVideo
-                                            : (
-                                                animalVideo.includes('youtu.be')
-                                                    ? `https://www.youtube.com/embed/${animalVideo.split('youtu.be/')[1].split(/[?&]/)[0]}`
-                                                    : animalVideo.replace('watch?v=', 'embed/')
-                                            )
-                                    }
-                                    title="Video"
-                                    allow="autoplay; encrypted-media"
-                                    allowFullScreen
-                                    className="w-full h-full rounded-2xl"
-                                    style={{ border: 0 }}
-                                />
-                            ) : (
-                                <video
-                                    className="w-full h-full rounded-2xl object-contain max-h-[410px]"
-                                    controls
-                                    src={animalVideo}
-                                >
-                                    Tu navegador no soporta video.
-                                </video>
-                            )}
+                            {!isExternalVideo(animalVideo)
+                                ? videoLoading
+                                    ? (
+                                        <div className="flex flex-col items-center justify-center w-full h-full">
+                                            <span className="text-white text-lg">Cargando video...</span>
+                                        </div>
+                                    )
+                                    : videoUrl
+                                        ? (
+                                            <video
+                                                className="w-full h-full rounded-2xl object-contain max-h-[410px]"
+                                                controls
+                                                src={videoUrl}
+                                                autoPlay
+                                            >
+                                                Tu navegador no soporta video.
+                                            </video>
+                                        )
+                                        : (
+                                            <div className="flex flex-col items-center justify-center w-full h-full">
+                                                <span className="text-white text-lg">No se pudo cargar el video.</span>
+                                            </div>
+                                        )
+                                : (
+                                    animalVideo.includes('youtube.com') || animalVideo.includes('youtu.be') ? (
+                                        <iframe
+                                            src={
+                                                animalVideo.includes('embed')
+                                                    ? animalVideo
+                                                    : (
+                                                        animalVideo.includes('youtu.be')
+                                                            ? `https://www.youtube.com/embed/${animalVideo.split('youtu.be/')[1].split(/[?&]/)[0]}`
+                                                            : animalVideo.replace('watch?v=', 'embed/')
+                                                    )
+                                            }
+                                            title="Video"
+                                            allow="autoplay; encrypted-media"
+                                            allowFullScreen
+                                            className="w-full h-full rounded-2xl"
+                                            style={{ border: 0 }}
+                                        />
+                                    ) : (
+                                        <video
+                                            className="w-full h-full rounded-2xl object-contain max-h-[410px]"
+                                            controls
+                                            src={animalVideo}
+                                            autoPlay
+                                        >
+                                            Tu navegador no soporta video.
+                                        </video>
+                                    )
+                                )
+                            }
                         </div>
                         {/* Modal Caption */}
                         <div className="p-3 pb-4 text-center">
