@@ -11,6 +11,7 @@ export interface Animal {
     size: AnimalSize;
     sex: AnimalSex;
     age_months?: number | null;
+    age?: number | null;
     breed?: string | null;
     location?: string | null; // ciudad / provincia
     imageUrl?: string | null;

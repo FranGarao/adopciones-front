@@ -35,7 +35,7 @@ export default function AnimalCard({ animal }: { animal: Animal }) {
     const setAnimal = useAnimalsStore((s) => s.setAnimal);
 
     const gallery = getGallery(animal);
-    const age = animal.age_months ? monthsToFriendly(animal.age_months) : 'Unknown';
+    const age = animal.age == 1 ? `${animal.age} año` : animal.age! > 1 ? `${animal.age} años` : 'Unknown';
     const [currentIdx, setCurrentIdx] = useState(0);
     const [modalOpen, setModalOpen] = useState(false);
     const [modalIdx, setModalIdx] = useState(0);
@@ -155,6 +155,8 @@ export default function AnimalCard({ animal }: { animal: Animal }) {
         setVideoLoading(false);
     };
 
+    console.log(animal.age);
+
     return (
         <>
             <article className="group rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition" style={{ backgroundColor: BLANCO_HUESO }}>
@@ -247,14 +249,6 @@ export default function AnimalCard({ animal }: { animal: Animal }) {
 
                     <div className="mt-3 flex items-center gap-2">
                         <Link
-                            href={`/animals/${animal.id}`}
-                            prefetch={false}
-                            onClick={() => setAnimal(animal)}
-                            className="px-3 py-2 text-sm rounded-xl border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800"
-                        >
-                            Ver ficha
-                        </Link>
-                        <Link
                             href={`/adopt/${animal.id}`}
                             onClick={() => setAnimal(animal)}
                             className="px-3 py-2 text-sm rounded-xl text-white font-semibold transition-colors"
@@ -264,6 +258,14 @@ export default function AnimalCard({ animal }: { animal: Animal }) {
                             prefetch={false}
                         >
                             Adoptar
+                        </Link>
+                        <Link
+                            href={`/animals/${animal.id}`}
+                            prefetch={false}
+                            onClick={() => setAnimal(animal)}
+                            className="px-3 py-2 text-sm rounded-xl border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800"
+                        >
+                            Ver ficha
                         </Link>
                         {animalVideo && (
                             <button
