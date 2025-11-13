@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import CreateAnimalForm from "./Components/CreateAnimalForm";
 import SectionsManager from "./Components/SectionsManager";
+import FAQsManager from "./Components/FAQsManager";
 import { api } from "@/lib/api";
 // import router from "next/router";
 import Swal from "sweetalert2";
@@ -36,7 +37,7 @@ export default function AdminPage() {
     const [now, setNow] = useState(Date.now());
     const [loading, setLoading] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [activeTab, setActiveTab] = useState<'animals' | 'sections'>('animals');
+    const [activeTab, setActiveTab] = useState<'animals' | 'sections' | 'faqs'>('animals');
 
     // Sync localStorage on mount in case localStorage was changed externally while the component was not mounted
     useEffect(() => {
@@ -288,12 +289,26 @@ export default function AdminPage() {
                     >
                         Secciones del Home
                     </button>
+                    <button
+                        onClick={() => setActiveTab('faqs')}
+                        className={`px-4 py-2 rounded-xl font-medium transition-colors ${activeTab === 'faqs'
+                            ? 'text-white'
+                            : 'border border-zinc-300 hover:bg-zinc-50'
+                            }`}
+                        style={{
+                            backgroundColor: activeTab === 'faqs' ? VERDE_PRINCIPAL : 'transparent',
+                            color: activeTab === 'faqs' ? 'white' : CASI_NEGRO
+                        }}
+                    >
+                        FAQs
+                    </button>
                 </div>
 
                 {/* Content */}
                 <div className="space-y-6">
                     {activeTab === 'animals' && <CreateAnimalForm />}
                     {activeTab === 'sections' && <SectionsManager />}
+                    {activeTab === 'faqs' && <FAQsManager />}
                 </div>
             </div>
         </div>

@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { useAnimalsStore } from '../store/useAnimalsStore';
 import { VERDE_PRINCIPAL, VERDE_ACENTO, BLANCO_HUESO, CASI_NEGRO } from '../../Constants/colors';
 import React, { useState, useRef } from 'react';
+import AnimalProfileModal from './AnimalProfileModal';
+import AdoptionFormModal from './AdoptionFormModal';
 
 const PLACEHOLDER_PATH = '/animals/placeholders/placeholder.jpg';
 
@@ -45,6 +47,10 @@ export default function AnimalCard({ animal }: { animal: Animal }) {
     const [videoUrl, setVideoUrl] = useState<string | null>(null);
     const [videoLoading, setVideoLoading] = useState(false);
     const videoObjectUrlRef = useRef<string | null>(null);
+
+    // Estados para los nuevos modales
+    const [profileModalOpen, setProfileModalOpen] = useState(false);
+    const [adoptionModalOpen, setAdoptionModalOpen] = useState(false);
 
     // Slider navigation
     const nextImage = (e: React.MouseEvent) => {
@@ -248,25 +254,21 @@ export default function AnimalCard({ animal }: { animal: Animal }) {
                     )}
 
                     <div className="mt-3 flex items-center gap-2">
-                        <Link
-                            href={`/adopt/${animal.id}`}
-                            onClick={() => setAnimal(animal)}
+                        <button
+                            onClick={() => setAdoptionModalOpen(true)}
                             className="px-3 py-2 text-sm rounded-xl text-white font-semibold transition-colors"
                             style={{ backgroundColor: VERDE_PRINCIPAL }}
                             onMouseEnter={(e) => e.currentTarget.style.backgroundColor = VERDE_ACENTO}
                             onMouseLeave={(e) => e.currentTarget.style.backgroundColor = VERDE_PRINCIPAL}
-                            prefetch={false}
                         >
                             Adoptar
-                        </Link>
-                        <Link
-                            href={`/animals/${animal.id}`}
-                            prefetch={false}
-                            onClick={() => setAnimal(animal)}
+                        </button>
+                        <button
+                            onClick={() => setProfileModalOpen(true)}
                             className="px-3 py-2 text-sm rounded-xl border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800"
                         >
                             Ver ficha
-                        </Link>
+                        </button>
                         {animalVideo && (
                             <button
                                 className="flex items-center gap-1 px-3 py-2 text-sm rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white hover:bg-zinc-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 transition"
@@ -460,6 +462,24 @@ export default function AnimalCard({ animal }: { animal: Animal }) {
                     </div>
                 </div>
             )}
+
+            {/* Modal de perfil del animal */}
+            <AnimalProfileModal
+                animal={animal}
+                isOpen={profileModalOpen}
+                onClose={() => setProfileModalOpen(false)}
+                onAdopt={() => {
+                    setProfileModalOpen(false);
+                    setAdoptionModalOpen(true);
+                }}
+            />
+
+            {/* Modal de formulario de adopción */}
+            <AdoptionFormModal
+                animal={animal}
+                isOpen={adoptionModalOpen}
+                onClose={() => setAdoptionModalOpen(false)}
+            />
         </>
     );
 }

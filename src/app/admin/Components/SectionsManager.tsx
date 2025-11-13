@@ -8,6 +8,12 @@ import { VERDE_PRINCIPAL, VERDE_ACENTO, CASI_NEGRO, BLANCO_HUESO } from '@/Const
 import CreateSectionForm from './CreateSectionForm';
 import Swal from 'sweetalert2';
 
+// Aux: Hace resolve de la imagen igual que los animals
+function resolveImageSrc(src: string) {
+    if (src.startsWith('http')) return src;
+    return (process.env.NEXT_PUBLIC_IMAGES_URL ?? '') + src;
+}
+
 export default function SectionsManager() {
     const { data: sections, isLoading, isError } = useAllSections();
     const deleteMutation = useDeleteSection();
@@ -128,7 +134,7 @@ export default function SectionsManager() {
                                                 {section.images.slice(0, 3).map((imageUrl, index) => (
                                                     <img
                                                         key={index}
-                                                        src={imageUrl}
+                                                        src={resolveImageSrc(imageUrl)}
                                                         alt={`${section.title} ${index + 1}`}
                                                         className="w-16 h-16 object-cover rounded-lg border border-zinc-300"
                                                     />

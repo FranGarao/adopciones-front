@@ -1,6 +1,7 @@
 // app/about/page.tsx
 import Link from "next/link";
 import { useSections } from '@/hooks/useSections';
+import { useFAQs } from '@/hooks/useFAQs';
 import { VERDE_PRINCIPAL, VERDE_ACENTO, VERDE_MUY_CLARO, BLANCO_HUESO, CASI_NEGRO, NEUTRO } from '../../Constants/colors';
 
 export default function AboutPage() {
@@ -10,6 +11,9 @@ export default function AboutPage() {
 
     // Traer las secciones dinámicamente
     const { data: sections, isLoading, isError } = useSections();
+
+    // Traer las FAQs dinámicamente
+    const { data: faqs, isLoading: faqsLoading, isError: faqsError } = useFAQs();
     return (
         <div className="mx-auto max-w-6xl px-4 py-8 space-y-10">
             {/* Hero */}
@@ -183,38 +187,64 @@ export default function AboutPage() {
             </section>
 
             {/* FAQ */}
-            <section className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-6">
+            <section id="faqs" className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-6">
                 <h3 className="text-lg font-semibold">Preguntas frecuentes</h3>
-                <div className="mt-4 space-y-3">
-                    <details className="group rounded-xl border border-zinc-200 dark:border-zinc-800 p-4">
-                        <summary className="cursor-pointer font-medium">
-                            ¿Cómo es el proceso de adopción?
-                        </summary>
-                        <p className="mt-2 text-sm text-zinc-700 dark:text-zinc-300">
-                            Completás el formulario, coordinamos una charla y, si hay match, firmamos
-                            el compromiso de adopción. Hacemos seguimiento durante la adaptación.
-                        </p>
-                    </details>
 
-                    <details className="group rounded-xl border border-zinc-200 dark:border-zinc-800 p-4">
-                        <summary className="cursor-pointer font-medium">
-                            ¿Puedo conocer a los animales antes?
-                        </summary>
-                        <p className="mt-2 text-sm text-zinc-700 dark:text-zinc-300">
-                            Sí, coordinamos visita con turno. Algunos están en hogares de tránsito.
-                        </p>
-                    </details>
+                {faqsLoading ? (
+                    <div className="mt-4 space-y-3">
+                        {[1, 2, 3].map((i) => (
+                            <div key={i} className="rounded-xl border border-zinc-200 dark:border-zinc-800 p-4 animate-pulse">
+                                <div className="h-5 bg-gray-200 rounded mb-2"></div>
+                                <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                            </div>
+                        ))}
+                    </div>
+                ) : faqsError || !faqs || faqs.length === 0 ? (
+                    <div className="mt-4 space-y-3">
+                        {/* FAQs por defecto si no hay datos */}
+                        <details className="group rounded-xl border border-zinc-200 dark:border-zinc-800 p-4">
+                            <summary className="cursor-pointer font-medium">
+                                ¿Cómo es el proceso de adopción?
+                            </summary>
+                            <p className="mt-2 text-sm text-zinc-700 dark:text-zinc-300">
+                                Completás el formulario, coordinamos una charla y, si hay match, firmamos
+                                el compromiso de adopción. Hacemos seguimiento durante la adaptación.
+                            </p>
+                        </details>
 
-                    <details className="group rounded-xl border border-zinc-200 dark:border-zinc-800 p-4">
-                        <summary className="cursor-pointer font-medium">
-                            ¿Aceptan donaciones?
-                        </summary>
-                        <p className="mt-2 text-sm text-zinc-700 dark:text-zinc-300">
-                            ¡Claro! Podés colaborar con insumos o aportes económicos. Escribinos al
-                            email y te pasamos los medios de donación.
-                        </p>
-                    </details>
-                </div>
+                        <details className="group rounded-xl border border-zinc-200 dark:border-zinc-800 p-4">
+                            <summary className="cursor-pointer font-medium">
+                                ¿Puedo conocer a los animales antes?
+                            </summary>
+                            <p className="mt-2 text-sm text-zinc-700 dark:text-zinc-300">
+                                Sí, coordinamos visita con turno. Algunos están en hogares de tránsito.
+                            </p>
+                        </details>
+
+                        <details className="group rounded-xl border border-zinc-200 dark:border-zinc-800 p-4">
+                            <summary className="cursor-pointer font-medium">
+                                ¿Aceptan donaciones?
+                            </summary>
+                            <p className="mt-2 text-sm text-zinc-700 dark:text-zinc-300">
+                                ¡Claro! Podés colaborar con insumos o aportes económicos. Escribinos al
+                                email y te pasamos los medios de donación.
+                            </p>
+                        </details>
+                    </div>
+                ) : (
+                    <div className="mt-4 space-y-3">
+                        {faqs.map((faq) => (
+                            <details key={faq.id} className="group rounded-xl border border-zinc-200 dark:border-zinc-800 p-4">
+                                <summary className="cursor-pointer font-medium">
+                                    {faq.question}
+                                </summary>
+                                <p className="mt-2 text-sm text-zinc-700 dark:text-zinc-300">
+                                    {faq.answer}
+                                </p>
+                            </details>
+                        ))}
+                    </div>
+                )}
             </section>
         </div>
     );
