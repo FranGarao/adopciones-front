@@ -7,14 +7,37 @@ import { useAnimalsStore } from '../store/useAnimalsStore';
 import { VERDE_PRINCIPAL, VERDE_ACENTO, BLANCO_HUESO, CASI_NEGRO } from '../../Constants/colors';
 import React, { useState } from 'react';
 
+const PLACEHOLDER_PATH = '/animals/placeholders/placeholder.jpg';
+
+function getGallery(animal: Animal) {
+    // Si animal.gallery contiene URLs vacías, null o incluso el path absoluto, limpiamos aquí
+    let imgUrl = animal.imageUrl && animal.imageUrl.trim() !== '' ? animal.imageUrl : PLACEHOLDER_PATH;
+    let photoArray = Array.isArray(animal.gallery)
+        ? animal.gallery.filter(g => g && g.trim() !== '')
+        : [];
+    // Si imgUrl está ya en photoArray, no lo duplicar
+    if (!photoArray.includes(imgUrl)) {
+        photoArray = [imgUrl, ...photoArray];
+    }
+    if (photoArray.length === 0) {
+        photoArray = [PLACEHOLDER_PATH];
+    }
+    return photoArray;
+}
+
+// Para obtener la ruta de la imagen final considerar que si es placeholder, no debe anteponerse NEXT_PUBLIC_IMAGES_URL.
+function resolveImageSrc(src: string) {
+    // Si empieza con http o /animals/placeholders/...
+    if (src.startsWith('http')) return src;
+    if (src.startsWith(PLACEHOLDER_PATH)) return src;
+    if (src === PLACEHOLDER_PATH) return src;
+    return (process.env.NEXT_PUBLIC_IMAGES_URL ?? '') + src;
+}
+
 export default function AnimalCard({ animal }: { animal: Animal }) {
     const setAnimal = useAnimalsStore((s) => s.setAnimal);
 
-    const imageUrl = animal.imageUrl || '/animals/placeholders/placeholder.jpg';
-    const gallery = animal.gallery && animal.gallery.length > 0
-        ? [imageUrl, ...animal.gallery.filter((g) => g !== imageUrl)]
-        : [imageUrl];
-
+    const gallery = getGallery(animal);
     const age = animal.age_months ? monthsToFriendly(animal.age_months) : 'Unknown';
 
     // Simple slider state and handlers
@@ -23,7 +46,7 @@ export default function AnimalCard({ animal }: { animal: Animal }) {
     const [modalOpen, setModalOpen] = useState(false);
     const [modalIdx, setModalIdx] = useState(0);
 
-    // Modal navigation handlers
+    // Navegación de slider
     const nextImage = (e: React.MouseEvent) => {
         if (e) e.stopPropagation();
         setCurrentIdx((prev) => (prev + 1) % gallery.length);
@@ -79,7 +102,7 @@ export default function AnimalCard({ animal }: { animal: Animal }) {
                     }}
                 >
                     <Image
-                        src={`${process.env.NEXT_PUBLIC_IMAGES_URL}${gallery[currentIdx]}`}
+                        src={resolveImageSrc(gallery[currentIdx])}
                         alt={animal.name}
                         fill
                         className="object-cover group-hover:scale-105 transition"
@@ -191,7 +214,7 @@ export default function AnimalCard({ animal }: { animal: Animal }) {
                         </button>
                         <div className="relative w-full h-[55vw] md:h-[410px] flex items-center justify-center bg-black/30">
                             <Image
-                                src={`${process.env.NEXT_PUBLIC_IMAGES_URL}${gallery[modalIdx]}`}
+                                src={resolveImageSrc(gallery[modalIdx])}
                                 alt={animal.name}
                                 fill
                                 className="object-contain rounded-2xl"
