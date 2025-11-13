@@ -231,6 +231,7 @@ export default function AnimalCard({ animal }: { animal: Animal }) {
                                     </div>
                                 </>
                             )}
+
                         </div>
                         {gallery.length > 1 && (
                             <div className="flex justify-center mt-2 mb-2">
