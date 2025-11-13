@@ -15,6 +15,7 @@ export interface Animal {
     imageUrl?: string | null;
     mainImage?: File | null;
     createdAt?: string; // ISO
+    videos?: string[];
     gallery?: string[];
     tags?: string[];
     vaccinated?: boolean;

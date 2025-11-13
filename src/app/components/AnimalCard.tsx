@@ -10,7 +10,6 @@ import React, { useState } from 'react';
 const PLACEHOLDER_PATH = '/animals/placeholders/placeholder.jpg';
 
 function getGallery(animal: Animal) {
-    // Si animal.gallery contiene URLs vacías, null o incluso el path absoluto, limpiamos aquí
     let imgUrl = animal.imageUrl && animal.imageUrl.trim() !== '' ? animal.imageUrl : PLACEHOLDER_PATH;
     let photoArray = Array.isArray(animal.gallery)
         ? animal.gallery.filter(g => g && g.trim() !== '')
@@ -25,9 +24,7 @@ function getGallery(animal: Animal) {
     return photoArray;
 }
 
-// Para obtener la ruta de la imagen final considerar que si es placeholder, no debe anteponerse NEXT_PUBLIC_IMAGES_URL.
 function resolveImageSrc(src: string) {
-    // Si empieza con http o /animals/placeholders/...
     if (src.startsWith('http')) return src;
     if (src.startsWith(PLACEHOLDER_PATH)) return src;
     if (src === PLACEHOLDER_PATH) return src;
@@ -39,14 +36,14 @@ export default function AnimalCard({ animal }: { animal: Animal }) {
 
     const gallery = getGallery(animal);
     const age = animal.age_months ? monthsToFriendly(animal.age_months) : 'Unknown';
-
-    // Simple slider state and handlers
     const [currentIdx, setCurrentIdx] = useState(0);
-
     const [modalOpen, setModalOpen] = useState(false);
     const [modalIdx, setModalIdx] = useState(0);
 
-    // Navegación de slider
+    // Nuevo estado para video modal
+    const [videoModalOpen, setVideoModalOpen] = useState(false);
+
+    // Slider navigation
     const nextImage = (e: React.MouseEvent) => {
         if (e) e.stopPropagation();
         setCurrentIdx((prev) => (prev + 1) % gallery.length);
@@ -59,7 +56,7 @@ export default function AnimalCard({ animal }: { animal: Animal }) {
         setCurrentIdx(idx);
     };
 
-    // Modal navigation handlers use modalIdx state
+    // Modal navigation
     const nextModalImage = (e?: React.MouseEvent | React.KeyboardEvent) => {
         if (e) e.stopPropagation();
         setModalIdx((prev) => (prev + 1) % gallery.length);
@@ -72,10 +69,9 @@ export default function AnimalCard({ animal }: { animal: Animal }) {
         setModalIdx(idx);
     };
 
-    // Modal accessibility: close with escape or click outside
+    // Modal accessibility
     React.useEffect(() => {
         if (!modalOpen) return;
-
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
                 setModalOpen(false);
@@ -86,10 +82,25 @@ export default function AnimalCard({ animal }: { animal: Animal }) {
             }
         };
         window.addEventListener('keydown', handleKeyDown);
-
         return () => window.removeEventListener('keydown', handleKeyDown);
-        // eslint-disable-next-line
     }, [modalOpen, gallery.length]);
+
+    // Video modal accessibility
+    React.useEffect(() => {
+        if (!videoModalOpen) return;
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                setVideoModalOpen(false);
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [videoModalOpen]);
+
+    // Encuentra el primer video (YouTube o mp4/mov/etc)
+    const animalVideo = animal?.videos && animal.videos.length > 0
+        ? animal.videos[0]
+        : null;
 
     return (
         <>
@@ -156,6 +167,23 @@ export default function AnimalCard({ animal }: { animal: Animal }) {
                             </span>
                         )}
                     </div>
+                    {animalVideo && (
+                        <button
+                            title="Ver video"
+                            className="absolute right-2 bottom-2 z-10 bg-black/50 text-white rounded-full p-2 hover:bg-emerald-700 transition cursor-pointer flex items-center"
+                            style={{ boxShadow: "0 1px 8px #1112" }}
+                            onClick={e => {
+                                e.stopPropagation();
+                                setVideoModalOpen(true);
+                            }}
+                        >
+                            <svg width={22} height={22} fill="currentColor" viewBox="0 0 20 20">
+                                <circle cx="10" cy="10" r="9" stroke="white" strokeWidth="1.5" fill="none" />
+                                <polygon points="8,7 15,10 8,13" fill="white" />
+                            </svg>
+                            <span className="sr-only">Ver video</span>
+                        </button>
+                    )}
                 </div>
 
                 <div className="p-3">
@@ -187,6 +215,22 @@ export default function AnimalCard({ animal }: { animal: Animal }) {
                         >
                             Adoptar
                         </Link>
+                        {animalVideo && (
+                            <button
+                                className="flex items-center gap-1 px-3 py-2 text-sm rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white hover:bg-zinc-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 transition"
+                                type="button"
+                                onClick={e => {
+                                    e.stopPropagation();
+                                    setVideoModalOpen(true);
+                                }}
+                            >
+                                <svg width={16} height={16} fill="currentColor" viewBox="0 0 20 20">
+                                    <circle cx="10" cy="10" r="9" stroke="black" strokeWidth="1.5" fill="none" />
+                                    <polygon points="8,7 15,10 8,13" fill="black" />
+                                </svg>
+                                Video
+                            </button>
+                        )}
                     </div>
                 </div>
             </article>
@@ -263,6 +307,70 @@ export default function AnimalCard({ animal }: { animal: Animal }) {
                                 </span>
                             </div>
                         )}
+                        {/* Modal Caption */}
+                        <div className="p-3 pb-4 text-center">
+                            <h3 className="font-bold text-lg" style={{ color: CASI_NEGRO }}>{animal.name}</h3>
+                            <p className="text-xs mt-1" style={{ color: CASI_NEGRO + '99' }}>
+                                {age}{animal.breed ? ` · ${animal.breed}` : ''}
+                            </p>
+                            {animal.location && (
+                                <p className="text-xs mt-1" style={{ color: CASI_NEGRO + '80' }}>{animal.location}</p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal para el video */}
+            {videoModalOpen && animalVideo && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+                    onClick={() => setVideoModalOpen(false)}
+                    style={{ cursor: 'zoom-out' }}
+                >
+                    <div
+                        className="relative max-w-3xl w-[92vw] md:w-[650px] bg-white dark:bg-zinc-900 rounded-2xl overflow-hidden shadow-lg"
+                        onClick={e => e.stopPropagation()}
+                    >
+                        <button
+                            className="absolute right-3 top-3 z-30 text-2xl bg-white/80 dark:bg-zinc-900/70 rounded-full p-1 border border-zinc-300 dark:border-zinc-700 hover:bg-white/90 dark:hover:bg-zinc-800 transition"
+                            onClick={() => setVideoModalOpen(false)}
+                            aria-label="Cerrar"
+                        >
+                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path d="M18 6L6 18" stroke="#222" strokeWidth="2" strokeLinecap="round" />
+                                <path d="M6 6l12 12" stroke="#222" strokeWidth="2" strokeLinecap="round" />
+                            </svg>
+                        </button>
+                        <div className="p-0 relative w-full h-[55vw] md:h-[410px] flex items-center justify-center bg-black/80">
+                            {/* Mostrar video según el tipo */}
+                            {animalVideo.includes('youtube.com') || animalVideo.includes('youtu.be') ? (
+                                <iframe
+                                    src={
+                                        animalVideo.includes('embed')
+                                            ? animalVideo
+                                            : (
+                                                animalVideo.includes('youtu.be')
+                                                    ? `https://www.youtube.com/embed/${animalVideo.split('youtu.be/')[1].split(/[?&]/)[0]}`
+                                                    : animalVideo.replace('watch?v=', 'embed/')
+                                            )
+                                    }
+                                    title="Video"
+                                    allow="autoplay; encrypted-media"
+                                    allowFullScreen
+                                    className="w-full h-full rounded-2xl"
+                                    style={{ border: 0 }}
+                                />
+                            ) : (
+                                <video
+                                    className="w-full h-full rounded-2xl object-contain max-h-[410px]"
+                                    controls
+                                    src={animalVideo}
+                                >
+                                    Tu navegador no soporta video.
+                                </video>
+                            )}
+                        </div>
                         {/* Modal Caption */}
                         <div className="p-3 pb-4 text-center">
                             <h3 className="font-bold text-lg" style={{ color: CASI_NEGRO }}>{animal.name}</h3>
