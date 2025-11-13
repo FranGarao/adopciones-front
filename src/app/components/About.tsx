@@ -1,11 +1,15 @@
 // app/about/page.tsx
 import Link from "next/link";
+import { useSections } from '@/hooks/useSections';
 import { VERDE_PRINCIPAL, VERDE_ACENTO, VERDE_MUY_CLARO, BLANCO_HUESO, CASI_NEGRO, NEUTRO } from '../../Constants/colors';
 
 export default function AboutPage() {
     // arriba del return (o al inicio del componente)
     const ADDRESS = "Guido 1180, Quilmes, Buenos Aires, Argentina";
     const q = encodeURIComponent(ADDRESS);
+
+    // Traer las secciones dinámicamente
+    const { data: sections, isLoading, isError } = useSections();
     return (
         <div className="mx-auto max-w-6xl px-4 py-8 space-y-10">
             {/* Hero */}
@@ -20,17 +24,37 @@ export default function AboutPage() {
                 </p>
 
                 <div className="mt-6 flex flex-wrap gap-3">
-                    <Link
-                        href="/animals"
-                        prefetch={false}
-                        className="px-5 py-2 rounded-xl text-white font-semibold shadow transition-colors"
-                        style={{ backgroundColor: VERDE_PRINCIPAL }}
-                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = VERDE_ACENTO}
-                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = VERDE_PRINCIPAL}
-                    >
-                        PETSHOP
-                    </Link>
-
+                    {isLoading ? (
+                        <div className="flex gap-3">
+                            <div className="px-5 py-2 rounded-xl bg-gray-200 animate-pulse w-24 h-10"></div>
+                            <div className="px-5 py-2 rounded-xl bg-gray-200 animate-pulse w-32 h-10"></div>
+                        </div>
+                    ) : sections && sections.length > 0 ? (
+                        sections.map((section) => (
+                            <Link
+                                key={section.id}
+                                href={`/#section-${section.id}`}
+                                prefetch={false}
+                                className="px-5 py-2 rounded-xl text-white font-semibold shadow transition-colors"
+                                style={{ backgroundColor: VERDE_PRINCIPAL }}
+                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = VERDE_ACENTO}
+                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = VERDE_PRINCIPAL}
+                            >
+                                {section.title}
+                            </Link>
+                        ))
+                    ) : (
+                        <Link
+                            href="/animals"
+                            prefetch={false}
+                            className="px-5 py-2 rounded-xl text-white font-semibold shadow transition-colors"
+                            style={{ backgroundColor: VERDE_PRINCIPAL }}
+                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = VERDE_ACENTO}
+                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = VERDE_PRINCIPAL}
+                        >
+                            Ver Animales
+                        </Link>
+                    )}
                 </div>
             </section>
 

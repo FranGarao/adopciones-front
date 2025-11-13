@@ -179,7 +179,8 @@ export default function HomeSections() {
                 {sections.slice(0, 4).map((section) => (
                     <div
                         key={section.id}
-                        className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-10 hover:shadow-xl transition-all duration-300 w-full min-h-[600px]"
+                        id={`section-${section.id}`}
+                        className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-10 hover:shadow-xl transition-all duration-300 w-full min-h-[600px] scroll-mt-20"
                     >
                         <h3 className="text-2xl font-bold mb-6" style={{ color: VERDE_PRINCIPAL }}>
                             {section.title}
