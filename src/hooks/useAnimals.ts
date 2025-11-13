@@ -14,6 +14,7 @@ export function useAnimals(filters: Filters, pageSize = 24) {
                 type: filters.type !== 'ALL' ? (filters.type as any) : undefined,
                 size: filters.size !== 'ALL' ? (filters.size as any) : undefined,
                 sex: filters.sex !== 'ALL' ? (filters.sex as any) : undefined,
+                age: filters.age !== 'ALL' ? (filters.age as any) : undefined,
                 limit: pageSize,
                 offset: pageParam,
             });

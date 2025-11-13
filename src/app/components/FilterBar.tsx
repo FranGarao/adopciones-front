@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { AnimalSex, AnimalSize, AnimalType } from '../types/animal';
+import { AnimalSex, AnimalSize, AnimalType, AnimalAgeRange } from '../types/animal';
 import { BLANCO_HUESO, CASI_NEGRO } from '../../Constants/colors';
 
 export interface Filters {
@@ -8,11 +8,12 @@ export interface Filters {
     type: AnimalType | 'ALL';
     size: AnimalSize | 'ALL';
     sex: AnimalSex | 'ALL';
+    age: AnimalAgeRange | 'ALL';
 }
 
 
 export default function FilterBar({ onChange, hideTypeFilter = false }: { onChange: (f: Filters) => void, hideTypeFilter?: boolean }) {
-    const [filters, setFilters] = useState<Filters>({ q: '', type: 'ALL', size: 'ALL', sex: 'ALL' });
+    const [filters, setFilters] = useState<Filters>({ q: '', type: 'ALL', size: 'ALL', sex: 'ALL', age: 'ALL' });
 
 
     const update = (patch: Partial<Filters>) => {
@@ -82,6 +83,21 @@ export default function FilterBar({ onChange, hideTypeFilter = false }: { onChan
                     <option value="ALL">Todos</option>
                     <option value="MALE">Macho</option>
                     <option value="FEMALE">Hembra</option>
+                </select>
+            </div>
+
+            <div>
+                <label className="block text-sm font-medium mb-1">Edad (años)</label>
+                <select
+                    className="rounded-xl border border-zinc-300 px-3 py-2"
+                    style={{ backgroundColor: BLANCO_HUESO, color: CASI_NEGRO }}
+                    value={filters.age}
+                    onChange={(e) => update({ age: e.target.value as Filters['age'] })}
+                >
+                    <option value="ALL">Todas</option>
+                    <option value="0-3">0-3 meses</option>
+                    <option value="3-6">3-6 meses</option>
+                    <option value="+6">+6 meses</option>
                 </select>
             </div>
         </div>

@@ -1,6 +1,7 @@
 export type AnimalType = 'DOG' | 'CAT' | 'OTHER';
 export type AnimalSize = 'SMALL' | 'MEDIUM' | 'LARGE' | 'UNKNOWN';
 export type AnimalSex = 'MALE' | 'FEMALE' | 'UNKNOWN';
+export type AnimalAgeRange = '0-3' | '3-6' | '+6';
 
 
 export interface Animal {

@@ -7,7 +7,7 @@ import { useAnimals } from "@/hooks/useAnimals";
 import { useState } from "react";
 
 export default function DogsPage() {
-    const [filters, setFilters] = useState<Filters>({ q: '', type: 'DOG', size: 'ALL', sex: 'ALL' });
+    const [filters, setFilters] = useState<Filters>({ q: '', type: 'DOG', size: 'ALL', sex: 'ALL', age: 'ALL' });
     const { animals, total, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError } = useAnimals(filters, 24);
 
     return (

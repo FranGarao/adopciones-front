@@ -1,5 +1,5 @@
 import { api } from '../lib/api';
-import type { Animal, AnimalSex, AnimalSize, AnimalType } from '../app/types/animal';
+import type { Animal, AnimalSex, AnimalSize, AnimalType, AnimalAgeRange } from '../app/types/animal';
 
 
 export type ListAnimalsParams = {
@@ -7,6 +7,7 @@ export type ListAnimalsParams = {
     type?: AnimalType;
     size?: AnimalSize;
     sex?: AnimalSex;
+    age?: AnimalAgeRange;
     limit?: number;
     offset?: number; // o page: number
 };
@@ -25,6 +26,7 @@ export async function listAnimals(params: ListAnimalsParams): Promise<PaginatedA
             type: params.type || undefined,
             size: params.size || undefined,
             sex: params.sex || undefined,
+            age: params.age || undefined,
             limit: params.limit ?? 24,
             offset: params.offset ?? 0,
         },
