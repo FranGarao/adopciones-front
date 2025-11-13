@@ -95,9 +95,9 @@ export default function FilterBar({ onChange, hideTypeFilter = false }: { onChan
                     onChange={(e) => update({ age: e.target.value as Filters['age'] })}
                 >
                     <option value="ALL">Todas</option>
-                    <option value="0-3">0-3 meses</option>
-                    <option value="3-6">3-6 meses</option>
-                    <option value="+6">+6 meses</option>
+                    <option value="0-3">0-3 años</option>
+                    <option value="3-6">3-6 años</option>
+                    <option value="+6">+6 años</option>
                 </select>
             </div>
         </div>
