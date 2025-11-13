@@ -4,6 +4,14 @@ import { useSections } from '@/hooks/useSections';
 import { VERDE_PRINCIPAL, VERDE_ACENTO, BLANCO_HUESO, CASI_NEGRO } from '@/Constants/colors';
 import Image from 'next/image';
 
+const backendBase = process.env.NEXT_PUBLIC_IMAGES_URL ?? '';
+
+function resolveSectionImageUrl(url: string) {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    return `${backendBase}${url}`;
+}
+
 export default function HomeSections() {
     const { data: sections, isLoading, isError } = useSections();
 
@@ -45,7 +53,7 @@ export default function HomeSections() {
                         {section.images && section.images.length > 0 && (
                             <div className="relative h-48 mb-4 rounded-xl overflow-hidden">
                                 <Image
-                                    src={section.images[0]} // Usar la primera imagen
+                                    src={resolveSectionImageUrl(section.images[0])} // Resolver URL de la primera imagen
                                     alt={section.title}
                                     fill
                                     className="object-cover"
