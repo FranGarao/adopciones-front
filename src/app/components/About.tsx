@@ -53,7 +53,7 @@ export default function AboutPage() {
                             Ver en Google Maps →
                         </a> */}
                         <a
-                            className="inline-block text-sm hover:underline"
+                            className="inline-block text-sm hover:underline font-semibold"
                             style={{ color: VERDE_PRINCIPAL }}
                             href={`https://www.google.com/maps/dir/?api=1&destination=${q}`}
                             target="_blank"
@@ -69,14 +69,14 @@ export default function AboutPage() {
                     <ul className="mt-2 space-y-1 text-sm">
                         <li>
                             Email:{" "}
-                            <a className="hover:underline" href="mailto:adopciones@adopcionesquilmes.org">
+                            <a className="underline font-semibold" style={{ color: VERDE_PRINCIPAL }} href="mailto:adopciones@adopcionesquilmes.org">
                                 adopciones@adopcionesquilmes.org
                             </a>
                         </li>
 
                         <li>
                             Instagram:{" "}
-                            <a className="hover:underline" href="https://instagram.com/adopcionesquilmes" target="_blank" rel="noopener noreferrer">
+                            <a className="underline font-semibold" style={{ color: VERDE_PRINCIPAL }} href="https://instagram.com/adopcionesquilmes" target="_blank" rel="noopener noreferrer">
                                 @adopcionesquilmes
                             </a>
                         </li>
