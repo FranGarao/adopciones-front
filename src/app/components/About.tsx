@@ -3,13 +3,17 @@ import Link from "next/link";
 import { useSections } from '@/hooks/useSections';
 import { useFAQs } from '@/hooks/useFAQs';
 import { VERDE_PRINCIPAL, VERDE_ACENTO, VERDE_MUY_CLARO, BLANCO_HUESO, CASI_NEGRO, NEUTRO } from '../../Constants/colors';
+import { useState } from "react";
+import DonationModal from "./DonationModal";
 
 export default function AboutPage() {
     // arriba del return (o al inicio del componente)
     const ADDRESS = "Guido 1180, Quilmes, Buenos Aires, Argentina";
     const q = encodeURIComponent(ADDRESS);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     // Traer las secciones dinámicamente
+
     const { data: sections, isLoading, isError } = useSections();
 
     // Traer las FAQs dinámicamente
@@ -150,21 +154,26 @@ export default function AboutPage() {
                         <li>Difundí nuestros posteos.</li>
                     </ul>
                     <div className="mt-4 flex gap-3">
-                        <a
-                            href="mailto:adopciones@adopcionesquilmes.org?subject=Quiero%20ser%20hogar%20de%20tr%C3%A1nsito"
-                            className="px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-sm"
-                        >
-                            Ser hogar de tránsito
-                        </a>
-                        <a
-                            href="mailto:adopciones@adopcionesquilmes.org?subject=Donaciones"
-                            className="px-4 py-2 rounded-xl text-white font-semibold text-sm transition-colors"
+                        <Link
+                            target="_blank"
+                            prefetch={false}
+                            href="https://link.mercadopago.com.ar/adonacionesquilmes"
+                            className="px-4 py-2 rounded-xl text-white font-semibold text-sm transition-colors cursor-pointer"
                             style={{ backgroundColor: VERDE_PRINCIPAL }}
                             onMouseEnter={(e) => e.currentTarget.style.backgroundColor = VERDE_ACENTO}
                             onMouseLeave={(e) => e.currentTarget.style.backgroundColor = VERDE_PRINCIPAL}
                         >
-                            Donar por email
-                        </a>
+                            Dona tu granito de arena
+                        </Link>
+                        <button
+                            onClick={() => setIsModalOpen(true)}
+                            className="px-4 py-2 rounded-xl text-white font-semibold text-sm transition-colors cursor-pointer"
+                            style={{ backgroundColor: VERDE_PRINCIPAL }}
+                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = VERDE_ACENTO}
+                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = VERDE_PRINCIPAL}
+                        >
+                            Donaciones en especie
+                        </button>
                     </div>
                 </div>
 
@@ -177,11 +186,24 @@ export default function AboutPage() {
                         <li>Compromiso de castración, vacunas y controles veterinarios.</li>
                     </ul>
                     <Link
-                        href="/animals"
+                        href="/dogs"
                         prefetch={false}
                         className="mt-4 inline-block px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-sm"
+                        style={{ backgroundColor: VERDE_PRINCIPAL, color: 'white', fontWeight: 'bold' }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = VERDE_ACENTO}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = VERDE_PRINCIPAL}
                     >
-                        Ver animales disponibles
+                        Ver Perros
+                    </Link>
+                    <Link
+                        href="/cats"
+                        prefetch={false}
+                        className="mt-4 inline-block px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-sm"
+                        style={{ backgroundColor: VERDE_PRINCIPAL, color: 'white', fontWeight: 'bold' }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = VERDE_ACENTO}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = VERDE_PRINCIPAL}
+                    >
+                        Ver Gatos
                     </Link>
                 </div>
             </section>
@@ -246,6 +268,10 @@ export default function AboutPage() {
                     </div>
                 )}
             </section>
+            <DonationModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+            />
         </div>
     );
 }

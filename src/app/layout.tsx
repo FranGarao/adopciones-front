@@ -4,6 +4,7 @@ import "./globals.css";
 import QueryProvider from "@/providers/QueryProvider";
 import { NavBar } from "./components/Navbar";
 import AboutPage from "./components/About";
+import Watermark from "./components/Watermark";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,6 +37,7 @@ export default function RootLayout({
         <QueryProvider>
           <NavBar />
           {children}
+          <Watermark />
         </QueryProvider>
       </body>
     </html>
