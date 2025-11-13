@@ -8,7 +8,7 @@ export default function DonationSection() {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     // URL de MercadoPago - deberías reemplazar esto con tu link real
-    const mercadoPagoUrl = "https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=TU_PREFERENCE_ID";
+    const mercadoPagoUrl = "https://link.mercadopago.com.ar/adonacionesquilmes";
 
     const handleMercadoPagoDonation = () => {
         window.open(mercadoPagoUrl, '_blank');
@@ -44,7 +44,7 @@ export default function DonationSection() {
                     </div>
                     <button
                         onClick={handleMercadoPagoDonation}
-                        className="w-full px-6 py-3 rounded-xl text-white font-semibold transition-colors"
+                        className="w-full px-6 py-3 rounded-xl text-white font-semibold transition-colors cursor-pointer"
                         style={{ backgroundColor: VERDE_PRINCIPAL }}
                         onMouseEnter={(e) => e.currentTarget.style.backgroundColor = VERDE_ACENTO}
                         onMouseLeave={(e) => e.currentTarget.style.backgroundColor = VERDE_PRINCIPAL}
@@ -71,7 +71,7 @@ export default function DonationSection() {
                     </div>
                     <button
                         onClick={() => setIsModalOpen(true)}
-                        className="w-full px-6 py-3 rounded-xl border border-zinc-300 font-semibold hover:bg-white/60 transition-colors"
+                        className="w-full px-6 py-3 rounded-xl border border-zinc-300 font-semibold hover:bg-white/60 transition-colors cursor-pointer"
                         style={{ color: CASI_NEGRO }}
                     >
                         Registrar Donación
