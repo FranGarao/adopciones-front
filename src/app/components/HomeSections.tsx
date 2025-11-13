@@ -70,7 +70,7 @@ function SectionCarousel({ images, alt }: { images: string[]; alt: string }) {
 
     if (images.length === 1) {
         return (
-            <div className="relative h-64 mb-6 rounded-xl overflow-hidden">
+            <div className="relative h-80 mb-6 rounded-xl overflow-hidden">
                 <Image
                     src={resolveSectionImageUrl(images[0])}
                     alt={alt}
@@ -83,7 +83,7 @@ function SectionCarousel({ images, alt }: { images: string[]; alt: string }) {
 
     return (
         <div
-            className="relative h-64 mb-6 rounded-xl overflow-hidden group"
+            className="relative h-80 mb-6 rounded-xl overflow-hidden group"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
         >
@@ -128,8 +128,8 @@ function SectionCarousel({ images, alt }: { images: string[]; alt: string }) {
                         onClick={() => goToSlide(i)}
                         disabled={isTransitioning}
                         className={`block w-3 h-3 rounded-full border-2 border-white transition-all duration-300 hover:scale-110 disabled:cursor-not-allowed ${i === index
-                                ? 'bg-emerald-600 border-emerald-600'
-                                : 'bg-white/60 hover:bg-white/80'
+                            ? 'bg-emerald-600 border-emerald-600'
+                            : 'bg-white/60 hover:bg-white/80'
                             }`}
                         aria-label={`Ir a imagen ${i + 1}`}
                     />
@@ -156,7 +156,7 @@ export default function HomeSections() {
                     {[1, 2, 3, 4].map((i) => (
                         <div key={i} className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-8 animate-pulse w-full">
                             <div className="h-8 bg-gray-200 rounded mb-6"></div>
-                            <div className="h-64 bg-gray-200 rounded mb-6"></div>
+                            <div className="h-80 bg-gray-200 rounded mb-6"></div>
                             <div className="space-y-3">
                                 <div className="h-5 bg-gray-200 rounded"></div>
                                 <div className="h-5 bg-gray-200 rounded w-4/5"></div>
@@ -179,7 +179,7 @@ export default function HomeSections() {
                 {sections.slice(0, 4).map((section) => (
                     <div
                         key={section.id}
-                        className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-8 hover:shadow-xl transition-all duration-300 w-full"
+                        className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-10 hover:shadow-xl transition-all duration-300 w-full min-h-[600px]"
                     >
                         <h3 className="text-2xl font-bold mb-6" style={{ color: VERDE_PRINCIPAL }}>
                             {section.title}
