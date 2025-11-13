@@ -1,5 +1,5 @@
 export type AnimalType = 'DOG' | 'CAT' | 'OTHER';
-export type AnimalSize = 'SMALL' | 'MEDIUM' | 'LARGE' | 'XL' | 'UNKNOWN';
+export type AnimalSize = 'SMALL' | 'MEDIUM' | 'LARGE' | 'UNKNOWN';
 export type AnimalSex = 'MALE' | 'FEMALE' | 'UNKNOWN';
 
 

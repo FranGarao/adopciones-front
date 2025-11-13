@@ -67,7 +67,6 @@ export default function FilterBar({ onChange, hideTypeFilter = false }: { onChan
                     <option value="SMALL">Pequeño</option>
                     <option value="MEDIUM">Mediano</option>
                     <option value="LARGE">Grande</option>
-                    <option value="XL">XL</option>
                 </select>
             </div>
 
