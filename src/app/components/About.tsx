@@ -102,7 +102,7 @@ export default function AboutPage() {
                         <li>
                             Email:{" "}
                             <a className="underline font-semibold" style={{ color: VERDE_PRINCIPAL }} href="mailto:adopciones@adopcionesquilmes.org">
-                                adopciones@adopcionesquilmes.org
+                                info@adopcionesquilmes.com
                             </a>
                         </li>
 
